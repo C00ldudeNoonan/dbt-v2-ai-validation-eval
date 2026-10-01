@@ -1,0 +1,13 @@
+venv-v1/
+venv-v2/
+work/
+__pycache__/
+*.pyc
+.pytest_cache/
+reference_project/target/
+reference_project/dbt_packages/
+reference_project/logs/
+reference_project/dbt_internal_packages/
+*.duckdb
+*.duckdb.wal
+logs/
