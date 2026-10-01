@@ -1,0 +1,295 @@
+variant_id,fault_id,arm,repetition,query_id,source,kind,measure,dimensions,time_grain,description,executed,error,n_rows,tolerance,n_flagged_rows,max_rel_diff,max_rel_diff_inf,worst_slice,flagged,counterfactual_flagged,attributable,exec_s,sql,config_hash
+customer_lifetime_value__CONTROL,CONTROL,A,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0,False,,False,,,0.0016,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__CONTROL,CONTROL,A,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0017,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__CONTROL,CONTROL,B,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0,False,,False,,,0.0009,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__CONTROL,CONTROL,B,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0011,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FANOUT,F-FANOUT,A,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,1,1.6403031930592746,False,grand_total,True,False,True,0.0007,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FANOUT,F-FANOUT,A,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,1,2.2161075818984926,False,latest month,True,False,True,0.0013,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FANOUT,F-FANOUT,B,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,1,1.640303193059278,False,grand_total,True,False,True,0.0012,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FANOUT,F-FANOUT,B,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,1,2.2161075818984934,False,latest month,True,False,True,0.0012,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FILTER,F-FILTER,A,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0031610885421592028,False,grand_total,False,,,0.001,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FILTER,F-FILTER,A,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0013,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FILTER,F-FILTER,B,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0031610885421586733,False,grand_total,False,,,0.0011,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-FILTER,F-FILTER,B,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0016,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-NULL,F-NULL,A,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0,False,,False,,,0.0015,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-NULL,F-NULL,A,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0015,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-NULL,F-NULL,B,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0,False,,False,,,0.0008,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-NULL,F-NULL,B,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0013,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-SHARED-DEF,F-SHARED-DEF,A,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-SHARED-DEF,F-SHARED-DEF,A,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.001,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-SHARED-DEF,F-SHARED-DEF,B,1,manual_grand_total,manual,total,lifetime_revenue,,total,Grand total of lifetime_revenue,True,,1,0.005,0,0.0,False,,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(lifetime_revenue) from model_output) as model_value,
+  (select sum(lifetime_revenue) from reference_output) as reference_value",e6ec2ffdc948
+customer_lifetime_value__F-SHARED-DEF,F-SHARED-DEF,B,1,manual_latest_period_total,manual,total,lifetime_revenue,,month,Total of lifetime_revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.001,"with latest as (select max(date_trunc('month', first_order_date)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(lifetime_revenue) from model_output where date_trunc('month', first_order_date) = (select p from latest)) as model_value,
+  (select sum(lifetime_revenue) from reference_output where date_trunc('month', first_order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+daily_order_counts__CONTROL,CONTROL,A,1,manual_grand_total,manual,total,order_count,,total,Grand total of order_count,True,,1,0.005,0,0.0,False,,False,,,0.0005,"select 'grand_total' as slice,
+  (select sum(order_count) from model_output) as model_value,
+  (select sum(order_count) from reference_output) as reference_value",e6ec2ffdc948
+daily_order_counts__CONTROL,CONTROL,A,1,manual_latest_period_total,manual,total,order_count,,day,Total of order_count in the most recent day,True,,1,0.005,0,0.0,False,,False,,,0.0008,"with latest as (select max(date_trunc('day', order_date)) as p from reference_output)
+select 'latest day' as slice,
+  (select sum(order_count) from model_output where date_trunc('day', order_date) = (select p from latest)) as model_value,
+  (select sum(order_count) from reference_output where date_trunc('day', order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+daily_order_counts__CONTROL,CONTROL,B,1,manual_grand_total,manual,total,order_count,,total,Grand total of order_count,True,,1,0.005,0,0.0,False,,False,,,0.0015,"select 'grand_total' as slice,
+  (select sum(order_count) from model_output) as model_value,
+  (select sum(order_count) from reference_output) as reference_value",e6ec2ffdc948
+daily_order_counts__CONTROL,CONTROL,B,1,manual_latest_period_total,manual,total,order_count,,day,Total of order_count in the most recent day,True,,1,0.005,0,0.0,False,,False,,,0.0015,"with latest as (select max(date_trunc('day', order_date)) as p from reference_output)
+select 'latest day' as slice,
+  (select sum(order_count) from model_output where date_trunc('day', order_date) = (select p from latest)) as model_value,
+  (select sum(order_count) from reference_output where date_trunc('day', order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+daily_order_counts__F-NULL,F-NULL,A,1,manual_grand_total,manual,total,order_count,,total,Grand total of order_count,True,,1,0.005,0,0.0,False,,False,,,0.0009,"select 'grand_total' as slice,
+  (select sum(order_count) from model_output) as model_value,
+  (select sum(order_count) from reference_output) as reference_value",e6ec2ffdc948
+daily_order_counts__F-NULL,F-NULL,A,1,manual_latest_period_total,manual,total,order_count,,day,Total of order_count in the most recent day,True,,1,0.005,0,0.0,False,,False,,,0.0014,"with latest as (select max(date_trunc('day', order_date)) as p from reference_output)
+select 'latest day' as slice,
+  (select sum(order_count) from model_output where date_trunc('day', order_date) = (select p from latest)) as model_value,
+  (select sum(order_count) from reference_output where date_trunc('day', order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+daily_order_counts__F-NULL,F-NULL,B,1,manual_grand_total,manual,total,order_count,,total,Grand total of order_count,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(order_count) from model_output) as model_value,
+  (select sum(order_count) from reference_output) as reference_value",e6ec2ffdc948
+daily_order_counts__F-NULL,F-NULL,B,1,manual_latest_period_total,manual,total,order_count,,day,Total of order_count in the most recent day,True,,1,0.005,0,0.0,False,,False,,,0.0012,"with latest as (select max(date_trunc('day', order_date)) as p from reference_output)
+select 'latest day' as slice,
+  (select sum(order_count) from model_output where date_trunc('day', order_date) = (select p from latest)) as model_value,
+  (select sum(order_count) from reference_output where date_trunc('day', order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+daily_order_counts__F-TZ,F-TZ,A,1,manual_grand_total,manual,total,order_count,,total,Grand total of order_count,True,,1,0.005,0,0.0,False,,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(order_count) from model_output) as model_value,
+  (select sum(order_count) from reference_output) as reference_value",e6ec2ffdc948
+daily_order_counts__F-TZ,F-TZ,A,1,manual_latest_period_total,manual,total,order_count,,day,Total of order_count in the most recent day,True,,1,0.005,1,0.2756756756756757,False,latest day,True,False,True,0.0011,"with latest as (select max(date_trunc('day', order_date)) as p from reference_output)
+select 'latest day' as slice,
+  (select sum(order_count) from model_output where date_trunc('day', order_date) = (select p from latest)) as model_value,
+  (select sum(order_count) from reference_output where date_trunc('day', order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+daily_order_counts__F-TZ,F-TZ,B,1,manual_grand_total,manual,total,order_count,,total,Grand total of order_count,True,,1,0.005,0,0.0,False,,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(order_count) from model_output) as model_value,
+  (select sum(order_count) from reference_output) as reference_value",e6ec2ffdc948
+daily_order_counts__F-TZ,F-TZ,B,1,manual_latest_period_total,manual,total,order_count,,day,Total of order_count in the most recent day,True,,1,0.005,1,0.2756756756756757,False,latest day,True,False,True,0.0019,"with latest as (select max(date_trunc('day', order_date)) as p from reference_output)
+select 'latest day' as slice,
+  (select sum(order_count) from model_output where date_trunc('day', order_date) = (select p from latest)) as model_value,
+  (select sum(order_count) from reference_output where date_trunc('day', order_date) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_active_customers__CONTROL,CONTROL,A,1,manual_grand_total,manual,total,active_customers,,total,Grand total of active_customers,True,,1,0.005,0,0.0,False,,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(active_customers) from model_output) as model_value,
+  (select sum(active_customers) from reference_output) as reference_value",e6ec2ffdc948
+monthly_active_customers__CONTROL,CONTROL,A,1,manual_latest_period_total,manual,total,active_customers,,month,Total of active_customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0011,"with latest as (select max(date_trunc('month', activity_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(active_customers) from model_output where date_trunc('month', activity_month) = (select p from latest)) as model_value,
+  (select sum(active_customers) from reference_output where date_trunc('month', activity_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_active_customers__CONTROL,CONTROL,B,1,manual_grand_total,manual,total,active_customers,,total,Grand total of active_customers,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(active_customers) from model_output) as model_value,
+  (select sum(active_customers) from reference_output) as reference_value",e6ec2ffdc948
+monthly_active_customers__CONTROL,CONTROL,B,1,manual_latest_period_total,manual,total,active_customers,,month,Total of active_customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.001,"with latest as (select max(date_trunc('month', activity_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(active_customers) from model_output where date_trunc('month', activity_month) = (select p from latest)) as model_value,
+  (select sum(active_customers) from reference_output where date_trunc('month', activity_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FANOUT,F-FANOUT,A,1,manual_grand_total,manual,total,active_customers,,total,Grand total of active_customers,True,,1,0.005,0,0.0,False,,False,,,0.0011,"select 'grand_total' as slice,
+  (select sum(active_customers) from model_output) as model_value,
+  (select sum(active_customers) from reference_output) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FANOUT,F-FANOUT,A,1,manual_latest_period_total,manual,total,active_customers,,month,Total of active_customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0018,"with latest as (select max(date_trunc('month', activity_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(active_customers) from model_output where date_trunc('month', activity_month) = (select p from latest)) as model_value,
+  (select sum(active_customers) from reference_output where date_trunc('month', activity_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FANOUT,F-FANOUT,B,1,manual_grand_total,manual,total,active_customers,,total,Grand total of active_customers,True,,1,0.005,0,0.0,False,,False,,,0.0008,"select 'grand_total' as slice,
+  (select sum(active_customers) from model_output) as model_value,
+  (select sum(active_customers) from reference_output) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FANOUT,F-FANOUT,B,1,manual_latest_period_total,manual,total,active_customers,,month,Total of active_customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0013,"with latest as (select max(date_trunc('month', activity_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(active_customers) from model_output where date_trunc('month', activity_month) = (select p from latest)) as model_value,
+  (select sum(active_customers) from reference_output where date_trunc('month', activity_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FILTER,F-FILTER,A,1,manual_grand_total,manual,total,active_customers,,total,Grand total of active_customers,True,,1,0.005,0,0.0013800241504226323,False,grand_total,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(active_customers) from model_output) as model_value,
+  (select sum(active_customers) from reference_output) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FILTER,F-FILTER,A,1,manual_latest_period_total,manual,total,active_customers,,month,Total of active_customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0013,"with latest as (select max(date_trunc('month', activity_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(active_customers) from model_output where date_trunc('month', activity_month) = (select p from latest)) as model_value,
+  (select sum(active_customers) from reference_output where date_trunc('month', activity_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FILTER,F-FILTER,B,1,manual_grand_total,manual,total,active_customers,,total,Grand total of active_customers,True,,1,0.005,0,0.0013800241504226323,False,grand_total,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(active_customers) from model_output) as model_value,
+  (select sum(active_customers) from reference_output) as reference_value",e6ec2ffdc948
+monthly_active_customers__F-FILTER,F-FILTER,B,1,manual_latest_period_total,manual,total,active_customers,,month,Total of active_customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0014,"with latest as (select max(date_trunc('month', activity_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(active_customers) from model_output where date_trunc('month', activity_month) = (select p from latest)) as model_value,
+  (select sum(active_customers) from reference_output where date_trunc('month', activity_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__CONTROL,CONTROL,A,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__CONTROL,CONTROL,A,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0011,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__CONTROL,CONTROL,B,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0013,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__CONTROL,CONTROL,B,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0016,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-FILTER,F-FILTER,A,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.003161088542158497,False,grand_total,False,,,0.0008,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-FILTER,F-FILTER,A,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0015,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-FILTER,F-FILTER,B,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.003161088542158144,False,grand_total,False,,,0.0008,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-FILTER,F-FILTER,B,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0014,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-OFFSET,F-OFFSET,A,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0012,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-OFFSET,F-OFFSET,A,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0016,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-OFFSET,F-OFFSET,B,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-OFFSET,F-OFFSET,B,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0009,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-SHARED-DEF,F-SHARED-DEF,A,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0012,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-SHARED-DEF,F-SHARED-DEF,A,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0013,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-SHARED-DEF,F-SHARED-DEF,B,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-SHARED-DEF,F-SHARED-DEF,B,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.001,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-TZ,F-TZ,A,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0008,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-TZ,F-TZ,A,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.004863322982412174,False,latest month,False,,,0.0011,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-TZ,F-TZ,B,1,manual_grand_total,manual,total,revenue_gross,,total,Grand total of revenue_gross,True,,1,0.005,0,0.0,False,,False,,,0.0007,"select 'grand_total' as slice,
+  (select sum(revenue_gross) from model_output) as model_value,
+  (select sum(revenue_gross) from reference_output) as reference_value",e6ec2ffdc948
+monthly_revenue_by_location__F-TZ,F-TZ,B,1,manual_latest_period_total,manual,total,revenue_gross,,month,Total of revenue_gross in the most recent month,True,,1,0.005,0,0.004863322982412174,False,latest month,False,,,0.0012,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue_gross) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue_gross) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__CONTROL,CONTROL,A,1,manual_grand_total,manual,total,customers,,total,Grand total of customers,True,,1,0.005,0,0.0,False,,False,,,0.0011,"select 'grand_total' as slice,
+  (select sum(customers) from model_output) as model_value,
+  (select sum(customers) from reference_output) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__CONTROL,CONTROL,A,1,manual_latest_period_total,manual,total,customers,,month,Total of customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0013,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(customers) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(customers) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__CONTROL,CONTROL,B,1,manual_grand_total,manual,total,customers,,total,Grand total of customers,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(customers) from model_output) as model_value,
+  (select sum(customers) from reference_output) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__CONTROL,CONTROL,B,1,manual_latest_period_total,manual,total,customers,,month,Total of customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0011,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(customers) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(customers) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__F-FILTER,F-FILTER,A,1,manual_grand_total,manual,total,customers,,total,Grand total of customers,True,,1,0.005,0,0.0013800241504226323,False,grand_total,False,,,0.0011,"select 'grand_total' as slice,
+  (select sum(customers) from model_output) as model_value,
+  (select sum(customers) from reference_output) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__F-FILTER,F-FILTER,A,1,manual_latest_period_total,manual,total,customers,,month,Total of customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0014,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(customers) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(customers) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__F-FILTER,F-FILTER,B,1,manual_grand_total,manual,total,customers,,total,Grand total of customers,True,,1,0.005,0,0.0013800241504226323,False,grand_total,False,,,0.0008,"select 'grand_total' as slice,
+  (select sum(customers) from model_output) as model_value,
+  (select sum(customers) from reference_output) as reference_value",e6ec2ffdc948
+new_vs_returning_customers_monthly__F-FILTER,F-FILTER,B,1,manual_latest_period_total,manual,total,customers,,month,Total of customers in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0014,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(customers) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(customers) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+product_margin_monthly__CONTROL,CONTROL,A,1,manual_grand_total,manual,total,revenue,,total,Grand total of revenue,True,,1,0.005,0,0.0,False,,False,,,0.0009,"select 'grand_total' as slice,
+  (select sum(revenue) from model_output) as model_value,
+  (select sum(revenue) from reference_output) as reference_value",e6ec2ffdc948
+product_margin_monthly__CONTROL,CONTROL,A,1,manual_latest_period_total,manual,total,revenue,,month,Total of revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0019,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+product_margin_monthly__CONTROL,CONTROL,B,1,manual_grand_total,manual,total,revenue,,total,Grand total of revenue,True,,1,0.005,0,0.0,False,,False,,,0.0006,"select 'grand_total' as slice,
+  (select sum(revenue) from model_output) as model_value,
+  (select sum(revenue) from reference_output) as reference_value",e6ec2ffdc948
+product_margin_monthly__CONTROL,CONTROL,B,1,manual_latest_period_total,manual,total,revenue,,month,Total of revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0015,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-FANOUT,F-FANOUT,A,1,manual_grand_total,manual,total,revenue,,total,Grand total of revenue,True,,1,0.005,1,5.111725496498534,False,grand_total,True,False,True,0.0009,"select 'grand_total' as slice,
+  (select sum(revenue) from model_output) as model_value,
+  (select sum(revenue) from reference_output) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-FANOUT,F-FANOUT,A,1,manual_latest_period_total,manual,total,revenue,,month,Total of revenue in the most recent month,True,,1,0.005,1,4.973542226335869,False,latest month,True,False,True,0.0016,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-FANOUT,F-FANOUT,B,1,manual_grand_total,manual,total,revenue,,total,Grand total of revenue,True,,1,0.005,1,5.111725496498534,False,grand_total,True,False,True,0.0012,"select 'grand_total' as slice,
+  (select sum(revenue) from model_output) as model_value,
+  (select sum(revenue) from reference_output) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-FANOUT,F-FANOUT,B,1,manual_latest_period_total,manual,total,revenue,,month,Total of revenue in the most recent month,True,,1,0.005,1,4.973542226335869,False,latest month,True,False,True,0.0014,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-OFFSET,F-OFFSET,A,1,manual_grand_total,manual,total,revenue,,total,Grand total of revenue,True,,1,0.005,0,0.0,False,,False,,,0.0004,"select 'grand_total' as slice,
+  (select sum(revenue) from model_output) as model_value,
+  (select sum(revenue) from reference_output) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-OFFSET,F-OFFSET,A,1,manual_latest_period_total,manual,total,revenue,,month,Total of revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0007,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-OFFSET,F-OFFSET,B,1,manual_grand_total,manual,total,revenue,,total,Grand total of revenue,True,,1,0.005,0,0.0,False,,False,,,0.001,"select 'grand_total' as slice,
+  (select sum(revenue) from model_output) as model_value,
+  (select sum(revenue) from reference_output) as reference_value",e6ec2ffdc948
+product_margin_monthly__F-OFFSET,F-OFFSET,B,1,manual_latest_period_total,manual,total,revenue,,month,Total of revenue in the most recent month,True,,1,0.005,0,0.0,False,,False,,,0.0014,"with latest as (select max(date_trunc('month', order_month)) as p from reference_output)
+select 'latest month' as slice,
+  (select sum(revenue) from model_output where date_trunc('month', order_month) = (select p from latest)) as model_value,
+  (select sum(revenue) from reference_output where date_trunc('month', order_month) = (select p from latest)) as reference_value",e6ec2ffdc948

@@ -1,0 +1,63 @@
+{
+ "run_key": "daily_order_counts__F-DUPKEY__A__r1",
+ "row": {
+  "variant_id": "daily_order_counts__F-DUPKEY",
+  "task": "daily_order_counts",
+  "fault_id": "F-DUPKEY",
+  "category": "Duplicate keys",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L2",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L2",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L2",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 63,
+  "build_nodes_executed": 81,
+  "wall_clock_s": 7.21,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Got 173 results, configured to fail if != 0"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L2",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 63,
+   "nodes_executed": 81,
+   "failures": [
+    {
+     "unique_id": "test.jaffle_shop.unique_daily_order_counts_order_date.4128b42495",
+     "status": "fail",
+     "message": "Got 173 results, configured to fail if != 0",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 7.209313333034515
+  }
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "run_key": "product_margin_monthly__F-TYPE__A__r1",
+ "row": {
+  "variant_id": "product_margin_monthly__F-TYPE",
+  "task": "product_margin_monthly",
+  "fault_id": "F-TYPE",
+  "category": "Type / signature error",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 52,
+  "build_nodes_executed": 76,
+  "wall_clock_s": 6.53,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Runtime Error in model product_margin_monthly (models/marts/metrics/product_margin_monthly.sql)\n  Binder Error: No function matches the given name and argument types 'sum(VARCHAR)'. You might need to "
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 52,
+   "nodes_executed": 76,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.product_margin_monthly",
+     "status": "error",
+     "message": "Runtime Error in model product_margin_monthly (models/marts/metrics/product_margin_monthly.sql)\n  Binder Error: No function matches the given name and argument types 'sum(VARCHAR)'. You might need to add explicit type casts.\n  \tCandidate functions:\n  \tsum(DECIMAL) -> DECIMAL\n  \tsum(BOOLEAN) -> HUGEINT\n  \tsum(SMALLINT) -> HUGEINT\n  \tsum(INTEGER) -> HUGEINT\n  \tsum(BIGINT) -> HUGEINT\n  \tsum(HUGEINT) -> HUGEINT\n  \tsum(DOUBLE) -> DOUBLE\n  \tsum(BIGNUM) -> BIGNUM\n  \n  \n  LINE 75:         sum(qualifying",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 6.52908283402212
+  }
+ ]
+}

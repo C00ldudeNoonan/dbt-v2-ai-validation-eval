@@ -1,0 +1,74 @@
+{
+ "run_key": "monthly_active_customers__F-CONTRACT__B__r1",
+ "row": {
+  "variant_id": "monthly_active_customers__F-CONTRACT",
+  "task": "monthly_active_customers",
+  "fault_id": "F-CONTRACT",
+  "category": "Contract violation",
+  "arm": "B",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v2",
+  "engine_version": "2.0.6",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": true,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 51,
+  "build_nodes_executed": 77,
+  "wall_clock_s": 2.21,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.monthly_active_customers: Failed to eval the compiled Jinja expression invalid operation: Co"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "static_analysis",
+   "caught": false,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": false,
+   "queries_before_catch": 0,
+   "nodes_executed": 0,
+   "failures": [],
+   "wall_s": 0.7072058750782162
+  },
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 51,
+   "nodes_executed": 77,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.monthly_active_customers",
+     "status": "error",
+     "message": "Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.monthly_active_customers: Failed to eval the compiled Jinja expression invalid operation: Compilation Error for model.jaffle_shop.monthly_active_customers from models/marts/metrics/monthly_active_customers.sql: This model has an enforced contract that failed.\n Please ensure the name, data_type, and number of columns in your contract match the columns in your model's definition.\n\n|      col",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 1.4987204159842804
+  }
+ ]
+}

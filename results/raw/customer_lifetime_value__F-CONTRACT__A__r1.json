@@ -1,0 +1,63 @@
+{
+ "run_key": "customer_lifetime_value__F-CONTRACT__A__r1",
+ "row": {
+  "variant_id": "customer_lifetime_value__F-CONTRACT",
+  "task": "customer_lifetime_value",
+  "fault_id": "F-CONTRACT",
+  "category": "Contract violation",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L2",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L2",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 43,
+  "build_nodes_executed": 76,
+  "wall_clock_s": 7.27,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "\n\n\u001b[32mactual\u001b[0m differs from \u001b[31mexpected\u001b[0m:\n\n\u001b[0;1m@@\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1mcustomer_id\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1mcustomer_name\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1mfirst_order_date\u001b[0m                       \u001b[33m,\u001b[0m\u001b[0;"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L2",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 43,
+   "nodes_executed": 76,
+   "failures": [
+    {
+     "unique_id": "unit_test.jaffle_shop.customer_lifetime_value.test_customer_lifetime_value_aggregates_orders",
+     "status": "fail",
+     "message": "\n\n\u001b[32mactual\u001b[0m differs from \u001b[31mexpected\u001b[0m:\n\n\u001b[0;1m@@\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1mcustomer_id\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1mcustomer_name\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1mfirst_order_date\u001b[0m                       \u001b[33m,\u001b[0m\u001b[0;1mlast_order_date\u001b[0m\u001b[33m,\u001b[0m\u001b[0;1m...\u001b[0m\r\n\u001b[31;1m\u001b[34;1m\u2192\u001b[32;1m\u001b[0m \u001b[33m,\u001b[0mc1         \u001b[33m,\u001b[0mAda          \u001b[33m,\u001b[0m\u001b[31;1m2025-01-05 00:00:00\u001b[34;1m\u2192\u001b[32;1m2025-01-05 09:00:00\u001b[0m\u001b[33m,\u001b[0m2025-02-07     \u001b[33m,\u001b[0m...\r\n\n",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 7.267737291986123
+  }
+ ]
+}

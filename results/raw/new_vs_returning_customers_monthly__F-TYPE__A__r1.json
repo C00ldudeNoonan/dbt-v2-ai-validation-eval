@@ -1,0 +1,63 @@
+{
+ "run_key": "new_vs_returning_customers_monthly__F-TYPE__A__r1",
+ "row": {
+  "variant_id": "new_vs_returning_customers_monthly__F-TYPE",
+  "task": "new_vs_returning_customers_monthly",
+  "fault_id": "F-TYPE",
+  "category": "Type / signature error",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 51,
+  "build_nodes_executed": 77,
+  "wall_clock_s": 6.49,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Runtime Error in model new_vs_returning_customers_monthly (models/marts/metrics/new_vs_returning_customers_monthly.sql)\n  Conversion Error: invalid timestamp field format: \"f8486fce-bc07-4a4f-a6e9-ed6"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 51,
+   "nodes_executed": 77,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.new_vs_returning_customers_monthly",
+     "status": "error",
+     "message": "Runtime Error in model new_vs_returning_customers_monthly (models/marts/metrics/new_vs_returning_customers_monthly.sql)\n  Conversion Error: invalid timestamp field format: \"f8486fce-bc07-4a4f-a6e9-ed6a06ba996c\", expected format is (YYYY-MM-DD HH:MM:SS[.US][\u00b1HH[:MM[:SS]]| ZONE]) when casting from source column customer_id\n  \n  LINE 100:     cast(count(distinct customer_id) as bigint) as customers...\n            ^",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 6.489477916038595
+  }
+ ]
+}

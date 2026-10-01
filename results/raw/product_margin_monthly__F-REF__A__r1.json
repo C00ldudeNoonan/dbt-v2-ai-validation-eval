@@ -1,0 +1,63 @@
+{
+ "run_key": "product_margin_monthly__F-REF__A__r1",
+ "row": {
+  "variant_id": "product_margin_monthly__F-REF",
+  "task": "product_margin_monthly",
+  "fault_id": "F-REF",
+  "category": "Broken reference",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 52,
+  "build_nodes_executed": 76,
+  "wall_clock_s": 7.12,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Runtime Error in model product_margin_monthly (models/marts/metrics/product_margin_monthly.sql)\n  Binder Error: Values list \"order_items\" does not have a column named \"price\"\n  \n  LINE 57:         ord"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 52,
+   "nodes_executed": 76,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.product_margin_monthly",
+     "status": "error",
+     "message": "Runtime Error in model product_margin_monthly (models/marts/metrics/product_margin_monthly.sql)\n  Binder Error: Values list \"order_items\" does not have a column named \"price\"\n  \n  LINE 57:         order_items.price as product_price,\n                   ^",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 7.121738916961476
+  }
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "run_key": "monthly_active_customers__F-REF__A__r1",
+ "row": {
+  "variant_id": "monthly_active_customers__F-REF",
+  "task": "monthly_active_customers",
+  "fault_id": "F-REF",
+  "category": "Broken reference",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 48,
+  "build_nodes_executed": 77,
+  "wall_clock_s": 6.66,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Runtime Error in model monthly_active_customers (models/marts/metrics/monthly_active_customers.sql)\n  Binder Error: Values list \"qualifying_orders\" does not have a column named \"order_month\"\n  \n  LINE"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 48,
+   "nodes_executed": 77,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.monthly_active_customers",
+     "status": "error",
+     "message": "Runtime Error in model monthly_active_customers (models/marts/metrics/monthly_active_customers.sql)\n  Binder Error: Values list \"qualifying_orders\" does not have a column named \"order_month\"\n  \n  LINE 41:     cast(qualifying_orders.order_month as date) as activity_month,\n                    ^",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 6.66080495796632
+  }
+ ]
+}

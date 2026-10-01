@@ -1,0 +1,74 @@
+{
+ "run_key": "new_vs_returning_customers_monthly__F-TYPE__B__r1",
+ "row": {
+  "variant_id": "new_vs_returning_customers_monthly__F-TYPE",
+  "task": "new_vs_returning_customers_monthly",
+  "fault_id": "F-TYPE",
+  "category": "Type / signature error",
+  "arm": "B",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v2",
+  "engine_version": "2.0.6",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": true,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 47,
+  "build_nodes_executed": 77,
+  "wall_clock_s": 3.01,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Database Error in model new_vs_returning_customers_monthly (target/run/jaffle_shop/models/marts/metrics/new_vs_returning_customers_monthly.sql)\n  Conversion Error: invalid timestamp field format: \"3bf"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "static_analysis",
+   "caught": false,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": false,
+   "queries_before_catch": 0,
+   "nodes_executed": 0,
+   "failures": [],
+   "wall_s": 0.5931627920363098
+  },
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 47,
+   "nodes_executed": 77,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.new_vs_returning_customers_monthly",
+     "status": "error",
+     "message": "Database Error in model new_vs_returning_customers_monthly (target/run/jaffle_shop/models/marts/metrics/new_vs_returning_customers_monthly.sql)\n  Conversion Error: invalid timestamp field format: \"3bfe5d2b-8ab3-473f-b56c-cdd86fff8877\", expected format is (YYYY-MM-DD HH:MM:SS[.US][\u00b1HH[:MM[:SS]]| ZONE]) when casting from source column customer_id\n  \n  LINE 98:     cast(count(distinct customer_id) as bigint) as customers,\n                 ^\n  (in run/jaffle_shop/models/marts/metrics/new_vs_returnin",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 2.417772624990903
+  }
+ ]
+}

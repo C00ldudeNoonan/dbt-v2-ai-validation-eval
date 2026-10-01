@@ -1,0 +1,63 @@
+{
+ "run_key": "customer_lifetime_value__F-TYPE__A__r1",
+ "row": {
+  "variant_id": "customer_lifetime_value__F-TYPE",
+  "task": "customer_lifetime_value",
+  "fault_id": "F-TYPE",
+  "category": "Type / signature error",
+  "arm": "A",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v1",
+  "engine_version": "1.12.5",
+  "warehouse": "duckdb",
+  "reconciliation": "manual",
+  "static_analysis_gate": false,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 43,
+  "build_nodes_executed": 76,
+  "wall_clock_s": 6.55,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Runtime Error in unit_test test_customer_lifetime_value_aggregates_orders (models/marts/metrics/customer_lifetime_value.yml)\n  An error occurred during execution of unit test 'test_customer_lifetime_v"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 43,
+   "nodes_executed": 76,
+   "failures": [
+    {
+     "unique_id": "unit_test.jaffle_shop.customer_lifetime_value.test_customer_lifetime_value_aggregates_orders",
+     "status": "error",
+     "message": "Runtime Error in unit_test test_customer_lifetime_value_aggregates_orders (models/marts/metrics/customer_lifetime_value.yml)\n  An error occurred during execution of unit test 'test_customer_lifetime_value_aggregates_orders'. There may be an error in the unit test definition: check the data types.\n   Runtime Error\n    Binder Error: No function matches the given name and argument types 'sum(VARCHAR)'. You might need to add explicit type casts.\n    \tCandidate functions:\n    \tsum(DECIMAL) -> DECIMAL",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 6.544383500004187
+  }
+ ]
+}
