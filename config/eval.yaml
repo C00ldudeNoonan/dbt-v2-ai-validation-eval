@@ -1,0 +1,83 @@
+# Evaluation configuration. FROZEN before the first full run: any change alters
+# config_hash, which is recorded on every row of results/runs.csv.
+
+warehouse: duckdb
+
+engines:
+  v1:
+    venv: venv-v1
+  v2:
+    venv: venv-v2
+
+# Arms A/B differ only in `engine` (+ v2's mandatory static-analysis gate).
+# Arms B/C differ only in `reconciliation`.
+arms:
+  A:
+    engine: v1
+    static_analysis_gate: false
+    reconciliation: manual
+    repetitions: 1
+  B:
+    engine: v2
+    static_analysis_gate: true
+    reconciliation: manual
+    repetitions: 1
+  C:
+    engine: v2
+    static_analysis_gate: true
+    reconciliation: ai
+    repetitions: 3
+
+tolerances:
+  total_rel: 0.005      # +/-0.5% on single-row (total) comparisons
+  slice_rel: 0.01       # +/-1% on multi-row (sliced) comparisons
+  abs_floor: 0.000001   # |model - reference| below this is always a match (both ~0)
+  reference_match_rel: 0.000000001   # golden vs reference: float tolerance only
+
+# Timeboxed manual spot check (Arms A and B). Simulates a person under time pressure:
+# the grand total of the primary measure plus the most recent full period's total.
+# Same two queries for every task.
+manual_reconciliation:
+  checks: [grand_total, latest_period_total]
+
+llm:
+  backend: claude_cli          # claude_cli (claude -p) or anthropic_api (ANTHROPIC_API_KEY)
+  model: claude-sonnet-5-5
+  max_queries: 40
+  timeout_s: 900
+  max_attempts: 2              # retry once if the response isn't valid JSON
+
+dbt:
+  threads: 1                   # deterministic node order -> stable warehouse_queries_before_catch
+
+tasks:
+  monthly_revenue_by_location:
+    grain: [order_month, location_id]
+    primary_measure: revenue_gross
+    period_column: order_month
+    period_grain: month
+  daily_order_counts:
+    grain: [order_date]
+    primary_measure: order_count
+    period_column: order_date
+    period_grain: day
+  monthly_active_customers:
+    grain: [activity_month]
+    primary_measure: active_customers
+    period_column: activity_month
+    period_grain: month
+  customer_lifetime_value:
+    grain: [customer_id]
+    primary_measure: lifetime_revenue
+    period_column: first_order_date
+    period_grain: month
+  product_margin_monthly:
+    grain: [order_month, product_id]
+    primary_measure: revenue
+    period_column: order_month
+    period_grain: month
+  new_vs_returning_customers_monthly:
+    grain: [order_month, customer_type]
+    primary_measure: customers
+    period_column: order_month
+    period_grain: month
