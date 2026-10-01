@@ -1,0 +1,63 @@
+{
+ "run_key": "monthly_revenue_by_location__F-TYPE__C__r1",
+ "row": {
+  "variant_id": "monthly_revenue_by_location__F-TYPE",
+  "task": "monthly_revenue_by_location",
+  "fault_id": "F-TYPE",
+  "category": "Type / signature error",
+  "arm": "C",
+  "repetition": 1,
+  "hypothesized_layer": "L1",
+  "engine": "v2",
+  "engine_version": "2.0.6",
+  "warehouse": "duckdb",
+  "reconciliation": "ai",
+  "static_analysis_gate": true,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": true,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 0,
+  "build_nodes_executed": 0,
+  "wall_clock_s": 0.67,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Failed to resolve function sum: Argument type mismatch: actual: (varchar); candidates: (double); (decimal(p, s)); (bigint); (boolean)."
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "static_analysis",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": true,
+   "attributable": true,
+   "queries_before_catch": 0,
+   "nodes_executed": 0,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.monthly_revenue_by_location",
+     "status": "error",
+     "message": "Failed to resolve function sum: Argument type mismatch: actual: (varchar); candidates: (double); (decimal(p, s)); (bigint); (boolean).",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 0.664862958015874
+  }
+ ]
+}

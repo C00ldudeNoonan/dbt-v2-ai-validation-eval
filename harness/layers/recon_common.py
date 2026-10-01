@@ -103,15 +103,16 @@ def evaluate(sandbox: Sandbox, q: ReconQuery) -> QueryResult:
     try:
         rows = sandbox.run(q.sql)
         res.executed = True
-    except Exception as e:  # noqa: BLE001 - any SQL failure is logged, never a flag
+        diffs = [rel_diff(m, r, tol["abs_floor"]) for _, m, r in rows]
+    except Exception as e:  # noqa: BLE001 - SQL failures / non-numeric values are logged, never a flag
+        res.executed = False
         res.error = f"{type(e).__name__}: {e}"[:500]
         res.exec_s = time.monotonic() - start
         return res
     res.exec_s = time.monotonic() - start
     res.n_rows = len(rows)
     res.tolerance = tol["total_rel"] if len(rows) <= 1 else tol["slice_rel"]
-    for slice_, m, r in rows:
-        d = rel_diff(m, r, tol["abs_floor"])
+    for (slice_, m, r), d in zip(rows, diffs):
         if d > res.tolerance:
             res.n_flagged_rows += 1
         if d > res.max_rel_diff or (res.worst_slice == "" and d > 0):

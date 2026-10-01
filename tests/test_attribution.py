@@ -106,3 +106,9 @@ def test_failure_in_other_model_is_not_attributable(tmp_path):
     nodes = [NodeResult("model.jaffle_shop.other", "error", "boom", "model", "1")]
     o = classify_build(_ws(tmp_path), DbtResult("v1", ["build"], 1, "", 1, nodes), "t1", gate=False)
     assert o.caught and not o.attributable
+
+
+def test_non_numeric_values_are_a_query_error_not_a_crash():
+    q = ReconQuery("dates", "select 'x' slice, '2024-09-01' model_value, '2024-09-01' reference_value", "ai")
+    (r,) = run_queries([q], REF, REF, GOLDEN)
+    assert not r.executed and not r.flagged and "ValueError" in r.error

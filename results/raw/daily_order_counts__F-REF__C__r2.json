@@ -1,0 +1,63 @@
+{
+ "run_key": "daily_order_counts__F-REF__C__r2",
+ "row": {
+  "variant_id": "daily_order_counts__F-REF",
+  "task": "daily_order_counts",
+  "fault_id": "F-REF",
+  "category": "Broken reference",
+  "arm": "C",
+  "repetition": 2,
+  "hypothesized_layer": "L1",
+  "engine": "v2",
+  "engine_version": "2.0.6",
+  "warehouse": "duckdb",
+  "reconciliation": "ai",
+  "static_analysis_gate": true,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L1",
+  "caught_before_execution": true,
+  "flagged_any": true,
+  "stopped_at": "L1",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 0,
+  "build_nodes_executed": 0,
+  "wall_clock_s": 0.36,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "No column qualifying_orders.customer found"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "static_analysis",
+   "caught": true,
+   "layer": "L1",
+   "before_execution": true,
+   "attributable": true,
+   "queries_before_catch": 0,
+   "nodes_executed": 0,
+   "failures": [
+    {
+     "unique_id": "model.jaffle_shop.daily_order_counts",
+     "status": "error",
+     "message": "No column qualifying_orders.customer found",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 0.35471891600172967
+  }
+ ]
+}

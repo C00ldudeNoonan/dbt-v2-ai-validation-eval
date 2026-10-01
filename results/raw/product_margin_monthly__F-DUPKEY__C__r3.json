@@ -1,0 +1,74 @@
+{
+ "run_key": "product_margin_monthly__F-DUPKEY__C__r3",
+ "row": {
+  "variant_id": "product_margin_monthly__F-DUPKEY",
+  "task": "product_margin_monthly",
+  "fault_id": "F-DUPKEY",
+  "category": "Duplicate keys",
+  "arm": "C",
+  "repetition": 3,
+  "hypothesized_layer": "L2",
+  "engine": "v2",
+  "engine_version": "2.0.6",
+  "warehouse": "duckdb",
+  "reconciliation": "ai",
+  "static_analysis_gate": true,
+  "config_hash": "e6ec2ffdc948",
+  "llm_calls": 0,
+  "llm_input_tokens": 0,
+  "llm_output_tokens": 0,
+  "llm_cost_usd": null,
+  "llm_model_reported": "",
+  "llm_wall_s": 0.0,
+  "recon_generation_error": "",
+  "caught": true,
+  "caught_by_layer": "L2",
+  "caught_before_execution": false,
+  "flagged_any": true,
+  "stopped_at": "L2",
+  "unattributed_flags": 0,
+  "warehouse_queries_before_catch": 69,
+  "build_nodes_executed": 81,
+  "wall_clock_s": 2.07,
+  "recon_queries_generated": 0,
+  "recon_queries_executed": 0,
+  "recon_queries_failed": 0,
+  "recon_queries_flagged": 0,
+  "recon_exec_time_s": 0,
+  "dims_covered": "",
+  "grains_covered": "",
+  "failure_messages": "Error"
+ },
+ "flags": [],
+ "stages": [
+  {
+   "stage": "static_analysis",
+   "caught": false,
+   "layer": "L1",
+   "before_execution": false,
+   "attributable": false,
+   "queries_before_catch": 0,
+   "nodes_executed": 0,
+   "failures": [],
+   "wall_s": 0.4504305839072913
+  },
+  {
+   "stage": "build",
+   "caught": true,
+   "layer": "L2",
+   "before_execution": false,
+   "attributable": true,
+   "queries_before_catch": 69,
+   "nodes_executed": 81,
+   "failures": [
+    {
+     "unique_id": "test.jaffle_shop.dbt_utils_unique_combination_of_columns_product_margin_monthly_order_month__product_id.58b635c834",
+     "status": "fail",
+     "message": "Error",
+     "targets_task": true
+    }
+   ],
+   "wall_s": 1.6100092079723254
+  }
+ ]
+}
