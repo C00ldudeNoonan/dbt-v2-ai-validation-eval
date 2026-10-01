@@ -42,7 +42,7 @@ manual_reconciliation:
 
 llm:
   backend: claude_cli          # claude_cli (claude -p) or anthropic_api (ANTHROPIC_API_KEY)
-  model: claude-sonnet-5-5
+  model: claude-sonnet-5        # spec default claude-sonnet-5-5 is not recognized by claude CLI 2.1.259 (it silently falls back to Opus)
   max_queries: 40
   timeout_s: 900
   max_attempts: 2              # retry once if the response isn't valid JSON
