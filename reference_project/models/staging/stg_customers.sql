@@ -14,7 +14,11 @@ renamed as (
         id as customer_id,
 
         ---------- text
-        name as customer_name
+        name as customer_name,
+
+        ---------- booleans
+        -- evaluation addition: internal QA accounts are excluded from business metrics
+        coalesce(name like 'QA Test Account%', false) as is_test_account
 
     from source
 

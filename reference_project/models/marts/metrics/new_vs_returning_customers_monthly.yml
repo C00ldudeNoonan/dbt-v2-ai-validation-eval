@@ -1,0 +1,31 @@
+models:
+  - name: new_vs_returning_customers_monthly
+    description: >
+      Monthly customers, orders and revenue split by new vs returning. A customer is "new"
+      in the calendar month of their first qualifying order and "returning" in every later
+      month. Qualifying orders exclude internal "QA Test Account" customers and refunded
+      orders, both when finding a customer's first order and when counting activity.
+    config:
+      contract:
+        enforced: true
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [order_month, customer_type]
+    columns:
+      - name: order_month
+        data_type: date
+        data_tests: [not_null]
+      - name: customer_type
+        data_type: varchar
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['new', 'returning']
+      - name: customers
+        data_type: bigint
+      - name: order_count
+        data_type: bigint
+      - name: revenue_gross
+        data_type: decimal(18,2)

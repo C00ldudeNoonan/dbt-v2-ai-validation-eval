@@ -1,0 +1,46 @@
+models:
+  - name: daily_order_counts
+    description: >
+      Daily order activity. One row per calendar day (store-local order timestamp) with
+      at least one qualifying order. Qualifying orders exclude internal "QA Test Account"
+      customers and refunded orders. avg_items_per_order is the mean item count over
+      orders that have item records; orders with no item records are excluded from the
+      average rather than counted as zero.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_date
+        data_type: date
+        data_tests: [not_null, unique]
+      - name: order_count
+        data_type: bigint
+        data_tests: [not_null]
+      - name: customer_count
+        data_type: bigint
+      - name: item_count
+        data_type: bigint
+      - name: avg_items_per_order
+        data_type: double
+      - name: revenue_gross
+        data_type: decimal(18,2)
+
+unit_tests:
+  - name: test_daily_order_counts_counts_orders
+    description: Two ordinary orders on one day produce one row with the right counts.
+    model: daily_order_counts
+    given:
+      - input: ref('orders')
+        rows:
+          - {order_id: o1, customer_id: c1, ordered_at_ts: "2025-01-05 09:00:00", count_order_items: 1, order_total: 10.60}
+          - {order_id: o2, customer_id: c2, ordered_at_ts: "2025-01-05 12:00:00", count_order_items: 3, order_total: 21.20}
+      - input: ref('stg_customers')
+        rows:
+          - {customer_id: c1, is_test_account: false}
+          - {customer_id: c2, is_test_account: false}
+      - input: ref('stg_refunds')
+        format: sql
+        rows: select cast(null as varchar) as order_id where false
+    expect:
+      rows:
+        - {order_date: 2025-01-05, order_count: 2, customer_count: 2, item_count: 4, avg_items_per_order: 2.0, revenue_gross: 31.80}

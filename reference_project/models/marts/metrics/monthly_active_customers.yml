@@ -1,0 +1,26 @@
+models:
+  - name: monthly_active_customers
+    description: >
+      Monthly active customers. A customer is active in a calendar month if they placed
+      at least one qualifying order that month (store-local time). Qualifying orders
+      exclude internal "QA Test Account" customers and refunded orders. order_count is
+      the number of qualifying orders in the month, and orders_per_active_customer is
+      order_count divided by active_customers.
+    config:
+      contract:
+        enforced: true
+    data_tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "order_count >= active_customers"
+    columns:
+      - name: activity_month
+        data_type: date
+        data_tests: [not_null, unique]
+      - name: active_customers
+        data_type: bigint
+        data_tests: [not_null]
+      - name: order_count
+        data_type: bigint
+      - name: orders_per_active_customer
+        data_type: double

@@ -1,0 +1,59 @@
+models:
+  - name: monthly_revenue_by_location
+    description: >
+      Monthly revenue per store location. Revenue counts only qualifying orders:
+      orders placed by real customers (internal "QA Test Account" customers are excluded)
+      that have not been refunded. Months are calendar months of the store-local order
+      timestamp. revenue_gross includes tax; revenue_pretax is the order subtotal.
+    config:
+      contract:
+        enforced: true
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [order_month, location_id]
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "revenue_gross >= revenue_pretax"
+    columns:
+      - name: order_month
+        data_type: date
+        data_tests: [not_null]
+      - name: location_id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_locations')
+                field: location_id
+      - name: location_name
+        data_type: varchar
+      - name: order_count
+        data_type: bigint
+      - name: revenue_pretax
+        data_type: decimal(18,2)
+      - name: revenue_gross
+        data_type: decimal(18,2)
+
+unit_tests:
+  - name: test_monthly_revenue_by_location_sums_orders
+    description: Two ordinary orders at one store in one month roll up to one row.
+    model: monthly_revenue_by_location
+    given:
+      - input: ref('orders')
+        rows:
+          - {order_id: o1, customer_id: c1, location_id: l1, ordered_at_ts: "2025-01-05 10:00:00", subtotal: 10.00, order_total: 10.60}
+          - {order_id: o2, customer_id: c1, location_id: l1, ordered_at_ts: "2025-01-20 12:00:00", subtotal: 5.00, order_total: 5.30}
+      - input: ref('stg_customers')
+        rows:
+          - {customer_id: c1, is_test_account: false}
+      - input: ref('stg_refunds')
+        format: sql
+        rows: select cast(null as varchar) as order_id where false
+      - input: ref('stg_locations')
+        rows:
+          - {location_id: l1, location_name: Philadelphia}
+    expect:
+      rows:
+        - {order_month: 2025-01-01, location_id: l1, location_name: Philadelphia, order_count: 2, revenue_pretax: 15.00, revenue_gross: 15.90}

@@ -1,0 +1,13 @@
+models:
+  - name: stg_refunds
+    description: Evaluation-only addition. One row per refunded order.
+    columns:
+      - name: order_id
+        description: The refunded order. Each order is refunded at most once.
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
