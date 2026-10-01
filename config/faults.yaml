@@ -1,0 +1,309 @@
+# Fault catalog. FROZEN before the first full run (any edit changes config_hash).
+#
+# Each fault has catalog-level fields from the spec plus `applications`: one per task
+# the fault applies to. Each application is one variant (`<task>__<fault id>`) and
+# carries the concrete mutation adapted to that model's real SQL. A mutation is a list
+# of exact find/replace edits; `find` must occur exactly once in the target file.
+# An edit may name another `file` of the same model (e.g. its YAML); default is the model SQL.
+# An application may override hypothesized_layer / hypothesized_v1_vs_v2.
+#
+# Adaptation notes (decided during M3 verification, before any arm ran):
+#  - new_vs_returning_customers_monthly x F-OFFSET was dropped: taking the first-order
+#    month from unfiltered orders changed nothing, because customers order ~10x/month,
+#    so a refunded first order never moves the first-order month. Broken fault.
+#  - customer_lifetime_value x F-DUPKEY originally grouped by location_id, but no
+#    customer uses both stores, so the output was unchanged. It now groups by order year.
+#
+# Hypothesized layers are recorded BEFORE any arm runs:
+#   L1 = structural (parse/compile/static analysis/contract/database binder error)
+#   L2 = assertion (data tests, unit tests)
+#   L3 = semantic reconciliation; "L3-ai" = expected only from broad AI reconciliation
+#   none = expected miss in every arm
+
+defaults:
+  target_dir: models/marts/metrics
+
+faults:
+
+  - id: F-REF
+    category: Broken reference
+    description: Reference a nonexistent upstream column.
+    hypothesized_layer: L1
+    hypothesized_v1_vs_v2: "v2: L1 before execution (static analysis). v1: L1 at runtime (binder error when the model builds)."
+    applications:
+      - task: monthly_revenue_by_location
+        description: location_name read from a nonexistent locations.store_name.
+        mutation:
+          - find: "    locations.location_name,"
+            replace: "    locations.store_name as location_name,"
+      - task: daily_order_counts
+        description: customer_count uses the raw-table column name `customer` instead of customer_id.
+        mutation:
+          - find: "count(distinct qualifying_orders.customer_id) as bigint) as customer_count"
+            replace: "count(distinct qualifying_orders.customer) as bigint) as customer_count"
+      - task: monthly_active_customers
+        description: activity_month read from a nonexistent order_month column.
+        mutation:
+          - find: "    cast(date_trunc('month', qualifying_orders.ordered_at_ts) as date) as activity_month,"
+            replace: "    cast(qualifying_orders.order_month as date) as activity_month,"
+      - task: customer_lifetime_value
+        description: customer_name read from a nonexistent full_name column.
+        mutation:
+          - find: "    qualifying_orders.customer_name,"
+            replace: "    qualifying_orders.full_name as customer_name,"
+      - task: product_margin_monthly
+        description: product_price read from the raw-table column name `price`.
+        mutation:
+          - find: "        order_items.product_price,"
+            replace: "        order_items.price as product_price,"
+      - task: new_vs_returning_customers_monthly
+        description: order_total read from a nonexistent order_total_usd column.
+        mutation:
+          - find: "        qualifying_orders.order_total\n"
+            replace: "        qualifying_orders.order_total_usd as order_total\n"
+
+  - id: F-TYPE
+    category: Type / signature error
+    description: An aggregate over a string column, or a function/comparison with wrong argument types.
+    hypothesized_layer: L1
+    hypothesized_v1_vs_v2: "v2 strict: L1 before execution (type inference). v1: L1 at runtime (DuckDB binder error) at best."
+    applications:
+      - task: monthly_revenue_by_location
+        description: revenue_pretax sums the varchar location_id (copy-paste error).
+        mutation:
+          - find: "        sum(qualifying_orders.subtotal) as revenue_pretax,"
+            replace: "        sum(qualifying_orders.location_id) as revenue_pretax,"
+      - task: daily_order_counts
+        description: date_trunc arguments swapped (BigQuery-style date_trunc(ts, part)).
+        mutation:
+          - find: "date_trunc('day', qualifying_orders.ordered_at_ts)"
+            replace: "date_trunc(qualifying_orders.ordered_at_ts, 'day')"
+      - task: monthly_active_customers
+        description: date_trunc applied to the varchar order_id instead of the timestamp.
+        mutation:
+          - find: "    cast(date_trunc('month', qualifying_orders.ordered_at_ts) as date) as activity_month,"
+            replace: "    cast(date_trunc('month', qualifying_orders.order_id) as date) as activity_month,"
+      - task: customer_lifetime_value
+        description: lifetime_revenue sums the varchar customer_id (copy-paste error).
+        mutation:
+          - find: "cast(sum(qualifying_orders.order_total) as decimal(18, 2)) as lifetime_revenue"
+            replace: "cast(sum(qualifying_orders.customer_id) as decimal(18, 2)) as lifetime_revenue"
+      - task: product_margin_monthly
+        description: revenue sums the varchar product_id.
+        mutation:
+          - find: "        sum(qualifying_items.product_price) as revenue,"
+            replace: "        sum(qualifying_items.product_id) as revenue,"
+      - task: new_vs_returning_customers_monthly
+        description: First-order month compared against the varchar customer_id (timestamp = varchar).
+        mutation:
+          - find: "                = date_trunc('month', first_orders.first_ordered_at)"
+            replace: "                = first_orders.customer_id"
+
+  - id: F-CONTRACT
+    category: Contract violation
+    description: An output column's type drifts from the enforced contract.
+    hypothesized_layer: L1
+    hypothesized_v1_vs_v2: "v2: L1 before execution (inferred output schema vs contract). v1: L1 at runtime (contract preflight) for base-type drift."
+    applications:
+      - task: monthly_revenue_by_location
+        description: Explicit cast dropped; revenue_gross drifts from decimal(18,2) to decimal(38,2) (precision-only drift).
+        hypothesized_v1_vs_v2: "v2: L1 before execution if it checks precision. v1: likely NOT caught, because v1 contracts do not compare precision/scale."
+        mutation:
+          - find: "    cast(monthly.revenue_gross as decimal(18, 2)) as revenue_gross"
+            replace: "    monthly.revenue_gross"
+      - task: daily_order_counts
+        description: order_count cast to integer instead of bigint.
+        mutation:
+          - find: "cast(count(qualifying_orders.order_id) as bigint) as order_count"
+            replace: "cast(count(qualifying_orders.order_id) as integer) as order_count"
+      - task: monthly_active_customers
+        description: active_customers cast to double instead of bigint.
+        mutation:
+          - find: "cast(count(distinct qualifying_orders.customer_id) as bigint) as active_customers"
+            replace: "cast(count(distinct qualifying_orders.customer_id) as double) as active_customers"
+      - task: customer_lifetime_value
+        description: Date cast dropped; first_order_date drifts from date to timestamp.
+        mutation:
+          - find: "    cast(min(qualifying_orders.ordered_at_ts) as date) as first_order_date,"
+            replace: "    min(qualifying_orders.ordered_at_ts) as first_order_date,"
+      - task: product_margin_monthly
+        description: gross_margin cast to double instead of decimal(18,2).
+        mutation:
+          - find: "    cast(monthly.revenue - monthly.supply_cost as decimal(18, 2)) as gross_margin"
+            replace: "    cast(monthly.revenue - monthly.supply_cost as double) as gross_margin"
+      - task: new_vs_returning_customers_monthly
+        description: customers cast to integer instead of bigint.
+        mutation:
+          - find: "    cast(count(distinct customer_id) as bigint) as customers,"
+            replace: "    cast(count(distinct customer_id) as integer) as customers,"
+
+  - id: F-DUPKEY
+    category: Duplicate keys
+    description: An extra grouping column breaks the grain, so the grain key repeats.
+    hypothesized_layer: L2
+    hypothesized_v1_vs_v2: "Same on both: L2 (unique / unique_combination_of_columns test) after the model builds."
+    applications:
+      - task: monthly_revenue_by_location
+        description: Monthly CTE also groups by is_food_order (not selected).
+        mutation:
+          - find: "    group by 1, 2\n"
+            replace: "    group by 1, 2, qualifying_orders.is_food_order\n"
+      - task: daily_order_counts
+        description: Also groups by location_id (not selected).
+        mutation:
+          - find: "group by 1\n"
+            replace: "group by 1, qualifying_orders.location_id\n"
+      - task: monthly_active_customers
+        description: Also groups by location_id (not selected).
+        mutation:
+          - find: "group by 1\n"
+            replace: "group by 1, qualifying_orders.location_id\n"
+      - task: customer_lifetime_value
+        description: Also groups by order year (not selected); customers active in both 2024 and 2025 repeat.
+        mutation:
+          - find: "group by 1, 2\n"
+            replace: "group by 1, 2, date_trunc('year', qualifying_orders.ordered_at_ts)\n"
+      - task: product_margin_monthly
+        description: Monthly CTE also groups by order day.
+        mutation:
+          - find: "    group by 1, 2\n"
+            replace: "    group by 1, 2, cast(qualifying_items.ordered_at_ts as date)\n"
+      - task: new_vs_returning_customers_monthly
+        description: Final aggregation also groups by customer_id.
+        mutation:
+          - find: "group by 1, 2\n"
+            replace: "group by 1, 2, customer_id\n"
+
+  - id: F-FANOUT
+    category: Join fan-out
+    description: An order-level measure is aggregated after joining to item (or supply) grain; keys stay unique after re-aggregation.
+    hypothesized_layer: L3
+    hypothesized_v1_vs_v2: "Neither engine catches it structurally (valid SQL, contract intact, keys unique)."
+    applications:
+      - task: monthly_active_customers
+        description: Joins order_items before aggregating. order_count and orders_per_active_customer inflate (~1.5x); active_customers is unchanged (count distinct).
+        hypothesized_layer: L3-ai
+        mutation:
+          - find: "from qualifying_orders\n\ngroup by 1\n"
+            replace: "from qualifying_orders\n\ninner join {{ ref('order_items') }} as order_items\n    on qualifying_orders.order_id = order_items.order_id\n\ngroup by 1\n"
+      - task: customer_lifetime_value
+        description: >
+          Joins order_items before aggregating. lifetime_orders and lifetime_revenue inflate (~1.5x).
+          Like a real developer, the mutation also mocks the new ref in the existing unit test
+          (one item per order), so the happy-path unit test still passes.
+        mutation:
+          - find: "from qualifying_orders\n\ngroup by 1, 2\n"
+            replace: "from qualifying_orders\n\ninner join {{ ref('order_items') }} as order_items\n    on qualifying_orders.order_id = order_items.order_id\n\ngroup by 1, 2\n"
+          - file: models/marts/metrics/customer_lifetime_value.yml
+            find: "        rows: select cast(null as varchar) as order_id where false\n    expect:"
+            replace: "        rows: select cast(null as varchar) as order_id where false\n      - input: ref('order_items')\n        rows:\n          - {order_id: o1, order_item_id: i1}\n          - {order_id: o2, order_item_id: i2}\n    expect:"
+      - task: product_margin_monthly
+        description: Supply cost taken by joining stg_supplies at supply grain. units_sold and revenue inflate 4-9x; total supply_cost is unchanged.
+        mutation:
+          - find: "        order_items.supply_cost,"
+            replace: "        supplies.supply_cost,"
+          - find: "    from order_items\n\n    inner join qualifying_orders"
+            replace: "    from order_items\n\n    inner join {{ ref('stg_supplies') }} as supplies\n        on order_items.product_id = supplies.product_id\n\n    inner join qualifying_orders"
+
+  - id: F-FILTER
+    category: Missing business filter
+    description: The internal QA test-account exclusion is dropped (120 seeded QA orders at Brooklyn, 2025-03-10..16).
+    hypothesized_layer: L3-ai
+    hypothesized_v1_vs_v2: "Neither engine catches it structurally."
+    applications:
+      - task: monthly_revenue_by_location
+        description: QA orders counted. About +0.2% of grand total, 0 in the latest month; concentrated in Brooklyn 2025-03.
+        mutation:
+          - find: "    where not customers.is_test_account\n        and refunds.order_id is null"
+            replace: "    where refunds.order_id is null"
+      - task: monthly_active_customers
+        description: 8 QA customers counted as active in 2025-03 (+~1.3% that month).
+        mutation:
+          - find: "    where not customers.is_test_account\n        and refunds.order_id is null"
+            replace: "    where refunds.order_id is null"
+      - task: customer_lifetime_value
+        description: 8 extra QA customer rows appear; grand-total revenue moves ~+0.2%.
+        mutation:
+          - find: "    where not customers.is_test_account\n        and refunds.order_id is null"
+            replace: "    where refunds.order_id is null"
+      - task: new_vs_returning_customers_monthly
+        description: 8 QA customers appear as 'new' in 2025-03.
+        mutation:
+          - find: "    where not customers.is_test_account\n        and refunds.order_id is null"
+            replace: "    where refunds.order_id is null"
+
+  - id: F-TZ
+    category: Time boundary
+    description: The store-local timestamp is wrongly shifted 8 hours (a UTC to Pacific conversion) before truncation, moving ~20% of orders (07:xx) to the previous day.
+    hypothesized_layer: L3-ai
+    hypothesized_v1_vs_v2: "Neither engine catches it structurally."
+    applications:
+      - task: daily_order_counts
+        description: Every day's 07:xx orders move to the previous day; a new day 2024-08-31 appears.
+        hypothesized_layer: L3-ai
+        mutation:
+          - find: "date_trunc('day', qualifying_orders.ordered_at_ts)"
+            replace: "date_trunc('day', qualifying_orders.ordered_at_ts - interval 8 hour)"
+      - task: monthly_revenue_by_location
+        description: Only the first day of each month's 07:xx orders move to the prior month; monthly totals barely move.
+        hypothesized_layer: none
+        mutation:
+          - find: "date_trunc('month', qualifying_orders.ordered_at_ts)"
+            replace: "date_trunc('month', qualifying_orders.ordered_at_ts - interval 8 hour)"
+
+  - id: F-NULL
+    category: Null handling
+    description: coalesce(x, 0) inside an average, where the definition says nulls are excluded.
+    hypothesized_layer: L3-ai
+    hypothesized_v1_vs_v2: "Neither engine catches it structurally."
+    applications:
+      - task: daily_order_counts
+        description: Orders with no item records count as 0 items in avg_items_per_order.
+        mutation:
+          - find: "cast(avg(qualifying_orders.count_order_items) as double)"
+            replace: "cast(avg(coalesce(qualifying_orders.count_order_items, 0)) as double)"
+      - task: customer_lifetime_value
+        description: Orders with no item records count as $0 supply cost in avg_order_supply_cost.
+        mutation:
+          - find: "cast(avg(qualifying_orders.order_cost) as double)"
+            replace: "cast(avg(coalesce(qualifying_orders.order_cost, 0)) as double)"
+
+  - id: F-SHARED-DEF
+    category: Definition drift shared with reference
+    description: Refunded orders are included in revenue, in both the model AND the reference dashboard (per-fault reference override).
+    hypothesized_layer: none
+    hypothesized_v1_vs_v2: "Expected miss in all arms: the reference shares the bug."
+    applications:
+      - task: monthly_revenue_by_location
+        description: Refunded orders (~1.5%) are included.
+        mutation:
+          - find: "    where not customers.is_test_account\n        and refunds.order_id is null"
+            replace: "    where not customers.is_test_account"
+        reference_override:
+          - find: "      and not exists (select 1 from raw.raw_refunds r where r.order_id = o.id)\n"
+            replace: ""
+      - task: customer_lifetime_value
+        description: Refunded orders (~1.5%) are included.
+        mutation:
+          - find: "    where not customers.is_test_account\n        and refunds.order_id is null"
+            replace: "    where not customers.is_test_account"
+        reference_override:
+          - find: "      and not exists (select 1 from raw.raw_refunds r where r.order_id = o.id)\n"
+            replace: ""
+
+  - id: F-OFFSET
+    category: Offsetting errors
+    description: Records are misattributed between two members of a dimension, so grand totals are unchanged.
+    hypothesized_layer: L3-ai
+    hypothesized_v1_vs_v2: "Neither engine catches it structurally."
+    applications:
+      - task: monthly_revenue_by_location
+        description: Brooklyn's soft-launch orders (before 2025-03-15) are attributed to Philadelphia. Grand total and the latest month are unchanged.
+        mutation:
+          - find: "        qualifying_orders.location_id,\n\n        count("
+            replace: "        case\n            when qualifying_orders.location_id = '40e6ddd6-b8f6-4e17-8bd6-5e53966809d2'\n                and qualifying_orders.ordered_at_ts < '2025-03-15'\n                then '4b6c2304-2b9e-41e4-942a-cf11a1819378'\n            else qualifying_orders.location_id\n        end as location_id,\n\n        count("
+      - task: product_margin_monthly
+        description: JAF-005 items are attributed to JAF-003 (same $12 price). Unit, revenue and cost grand totals are unchanged.
+        mutation:
+          - find: "        order_items.product_id,"
+            replace: "        case\n            when order_items.product_id = 'JAF-005' then 'JAF-003'\n            else order_items.product_id\n        end as product_id,"

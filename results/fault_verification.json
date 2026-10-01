@@ -1,0 +1,786 @@
+[
+  {
+    "variant_id": "monthly_revenue_by_location__CONTROL",
+    "fault_id": "CONTROL",
+    "hypothesized_layer": "none",
+    "effect": "unchanged",
+    "build_ok": true,
+    "diff": {
+      "identical": true,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__CONTROL",
+    "fault_id": "CONTROL",
+    "hypothesized_layer": "none",
+    "effect": "unchanged",
+    "build_ok": true,
+    "diff": {
+      "identical": true,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__CONTROL",
+    "fault_id": "CONTROL",
+    "hypothesized_layer": "none",
+    "effect": "unchanged",
+    "build_ok": true,
+    "diff": {
+      "identical": true,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__CONTROL",
+    "fault_id": "CONTROL",
+    "hypothesized_layer": "none",
+    "effect": "unchanged",
+    "build_ok": true,
+    "diff": {
+      "identical": true,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__CONTROL",
+    "fault_id": "CONTROL",
+    "hypothesized_layer": "none",
+    "effect": "unchanged",
+    "build_ok": true,
+    "diff": {
+      "identical": true,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "new_vs_returning_customers_monthly__CONTROL",
+    "fault_id": "CONTROL",
+    "hypothesized_layer": "none",
+    "effect": "unchanged",
+    "build_ok": true,
+    "diff": {
+      "identical": true,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-REF",
+    "fault_id": "F-REF",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [UnresolvedIdentifier (dbt0227)]: No column locations.store_name found. Available are locations.tax_rate, locations.location_name, locations.opened_date, monthly.order_count, monthly.order_mon",
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__F-REF",
+    "fault_id": "F-REF",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [UnresolvedIdentifier (dbt0227)]: No column qualifying_orders.customer found. Available are qualifying_orders.customer_id, qualifying_orders.subtotal, qualifying_orders.order_id, qualifying_or",
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__F-REF",
+    "fault_id": "F-REF",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [UnresolvedIdentifier (dbt0227)]: No column qualifying_orders.order_month found. Available are qualifying_orders.order_cost, qualifying_orders.order_total, qualifying_orders.order_id, qualifyi",
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-REF",
+    "fault_id": "F-REF",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [UnresolvedIdentifier (dbt0227)]: No column qualifying_orders.full_name found. Available are qualifying_orders.customer_name, qualifying_orders.subtotal, qualifying_orders.tax_paid, qualifying",
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__F-REF",
+    "fault_id": "F-REF",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [UnresolvedIdentifier (dbt0227)]: No column order_items.price found. Available are order_items.order_id, qualifying_orders.order_id, order_items.product_id, qualifying_orders.tax_paid, qualify",
+    "verified": true
+  },
+  {
+    "variant_id": "new_vs_returning_customers_monthly__F-REF",
+    "fault_id": "F-REF",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [UnresolvedIdentifier (dbt0227)]: No column qualifying_orders.order_total_usd found. Available are qualifying_orders.order_total, qualifying_orders.order_total_cents, qualifying_orders.order_c",
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-TYPE",
+    "fault_id": "F-TYPE",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [FunctionResolutionFailed (dbt0209)]: Failed to resolve function sum: Argument type mismatch: actual: (varchar); candidates: (double); (decimal(p, s)); (bigint); (boolean).",
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__F-TYPE",
+    "fault_id": "F-TYPE",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [FunctionResolutionFailed (dbt0209)]: Failed to resolve function date_trunc: Argument type mismatch: actual: (timestamp, varchar); candidates: (varchar, timestamp); (varchar, date); (varchar, ",
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__F-TYPE",
+    "fault_id": "F-TYPE",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [FunctionResolutionFailed (dbt0209)]: Failed to resolve function date_trunc: Argument type mismatch: actual: (varchar, varchar); candidates: (varchar, timestamp); (varchar, date); (varchar, ti",
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-TYPE",
+    "fault_id": "F-TYPE",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [FunctionResolutionFailed (dbt0209)]: Failed to resolve function sum: Argument type mismatch: actual: (varchar); candidates: (double); (decimal(p, s)); (bigint); (boolean).",
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__F-TYPE",
+    "fault_id": "F-TYPE",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [FunctionResolutionFailed (dbt0209)]: Failed to resolve function sum: Argument type mismatch: actual: (varchar); candidates: (double); (decimal(p, s)); (bigint); (boolean).",
+    "verified": true
+  },
+  {
+    "variant_id": "new_vs_returning_customers_monthly__F-TYPE",
+    "fault_id": "F-TYPE",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [DbDriverFailed (dbt1308)]: Database Error in model new_vs_returning_customers_monthly (target/run/jaffle_shop/models/marts/metrics/new_vs_returning_customers_monthly.sql)",
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-CONTRACT",
+    "fault_id": "F-CONTRACT",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [JinjaError (dbt1501)]: Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.monthly_revenue_by_location: Failed to eval the compiled Jin",
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__F-CONTRACT",
+    "fault_id": "F-CONTRACT",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [JinjaError (dbt1501)]: Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.daily_order_counts: Failed to eval the compiled Jinja expres",
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__F-CONTRACT",
+    "fault_id": "F-CONTRACT",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [JinjaError (dbt1501)]: Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.monthly_active_customers: Failed to eval the compiled Jinja ",
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-CONTRACT",
+    "fault_id": "F-CONTRACT",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [JinjaError (dbt1501)]: Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.customer_lifetime_value: Failed to eval the compiled Jinja e",
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__F-CONTRACT",
+    "fault_id": "F-CONTRACT",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [JinjaError (dbt1501)]: Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.product_margin_monthly: Failed to eval the compiled Jinja ex",
+    "verified": true
+  },
+  {
+    "variant_id": "new_vs_returning_customers_monthly__F-CONTRACT",
+    "fault_id": "F-CONTRACT",
+    "hypothesized_layer": "L1",
+    "effect": "build_broken",
+    "detail": "[error] [JinjaError (dbt1501)]: Error executing materialization macro 'dbt_duckdb.materialization_table_duckdb' for model model.jaffle_shop.new_vs_returning_customers_monthly: Failed to eval the compi",
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-DUPKEY",
+    "fault_id": "F-DUPKEY",
+    "hypothesized_layer": "L2",
+    "effect": "output_changed",
+    "build_ok": false,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 36,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "build_failures": [
+      "test.jaffle_shop.dbt_utils_unique_combination_of_columns_monthly_revenue_by_location_order_month__location_id.189265b86a"
+    ],
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__F-DUPKEY",
+    "fault_id": "F-DUPKEY",
+    "hypothesized_layer": "L2",
+    "effect": "output_changed",
+    "build_ok": false,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 173,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "avg_items_per_order": 173
+      },
+      "max_rel_diff": {
+        "avg_items_per_order": 1.0335946248600223
+      },
+      "schema_mismatch": []
+    },
+    "build_failures": [
+      "test.jaffle_shop.unique_daily_order_counts_order_date.4128b42495"
+    ],
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__F-DUPKEY",
+    "fault_id": "F-DUPKEY",
+    "hypothesized_layer": "L2",
+    "effect": "output_changed",
+    "build_ok": false,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 6,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "orders_per_active_customer": 6
+      },
+      "max_rel_diff": {
+        "orders_per_active_customer": 1.021131092888898
+      },
+      "schema_mismatch": []
+    },
+    "build_failures": [
+      "test.jaffle_shop.unique_monthly_active_customers_activity_month.aa9e91e0f3"
+    ],
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-DUPKEY",
+    "fault_id": "F-DUPKEY",
+    "hypothesized_layer": "L2",
+    "effect": "output_changed",
+    "build_ok": false,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 278,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "last_order_date": 278,
+        "avg_order_value": 278,
+        "avg_order_supply_cost": 278
+      },
+      "max_rel_diff": {
+        "last_order_date": null,
+        "avg_order_value": 1.631228614203014,
+        "avg_order_supply_cost": 2.2584298256775672
+      },
+      "schema_mismatch": []
+    },
+    "build_failures": [
+      "test.jaffle_shop.unique_customer_lifetime_value_customer_id.90786299e9"
+    ],
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__F-DUPKEY",
+    "fault_id": "F-DUPKEY",
+    "hypothesized_layer": "L2",
+    "effect": "output_changed",
+    "build_ok": false,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 3515,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "build_failures": [
+      "test.jaffle_shop.dbt_utils_unique_combination_of_columns_product_margin_monthly_order_month__product_id.58b635c834"
+    ],
+    "verified": true
+  },
+  {
+    "variant_id": "new_vs_returning_customers_monthly__F-DUPKEY",
+    "fault_id": "F-DUPKEY",
+    "hypothesized_layer": "L2",
+    "effect": "output_changed",
+    "build_ok": false,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 5774,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "build_failures": [
+      "test.jaffle_shop.dbt_utils_unique_combination_of_columns_new_vs_returning_customers_monthly_order_month__customer_type.b6089a56f1"
+    ],
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__F-FANOUT",
+    "fault_id": "F-FANOUT",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "order_count": 12,
+        "orders_per_active_customer": 12
+      },
+      "max_rel_diff": {
+        "order_count": 0.5883762732174955,
+        "orders_per_active_customer": 0.5883762732174953
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-FANOUT",
+    "fault_id": "F-FANOUT",
+    "hypothesized_layer": "L3",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "first_order_date": 4,
+        "last_order_date": 5,
+        "lifetime_orders": 590,
+        "lifetime_revenue": 590,
+        "avg_order_value": 479,
+        "avg_order_supply_cost": 479
+      },
+      "max_rel_diff": {
+        "first_order_date": null,
+        "last_order_date": null,
+        "lifetime_orders": 9.0,
+        "lifetime_revenue": 9.000000000000002,
+        "avg_order_value": 0.7319277108433735,
+        "avg_order_supply_cost": 0.4133672717363703
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__F-FANOUT",
+    "fault_id": "F-FANOUT",
+    "hypothesized_layer": "L3",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "units_sold": 120,
+        "revenue": 120,
+        "gross_margin": 120
+      },
+      "max_rel_diff": {
+        "units_sold": 8.0,
+        "revenue": 8.0,
+        "gross_margin": 11.510791366906476
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-FILTER",
+    "fault_id": "F-FILTER",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "order_count": 1,
+        "revenue_pretax": 1,
+        "revenue_gross": 1
+      },
+      "max_rel_diff": {
+        "order_count": 0.060240963855421686,
+        "revenue_pretax": 0.1036312129796549,
+        "revenue_gross": 0.10363131562760315
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_active_customers__F-FILTER",
+    "fault_id": "F-FILTER",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "active_customers": 1,
+        "order_count": 1,
+        "orders_per_active_customer": 1
+      },
+      "max_rel_diff": {
+        "active_customers": 0.012944983818770227,
+        "order_count": 0.01973359644795264,
+        "orders_per_active_customer": 0.006701857196221545
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-FILTER",
+    "fault_id": "F-FILTER",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 8,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {},
+      "max_rel_diff": {},
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "new_vs_returning_customers_monthly__F-FILTER",
+    "fault_id": "F-FILTER",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "customers": 1,
+        "order_count": 1,
+        "revenue_gross": 1
+      },
+      "max_rel_diff": {
+        "customers": 0.028268551236749116,
+        "order_count": 0.05432322317790855,
+        "revenue_gross": 0.09228975157169735
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__F-TZ",
+    "fault_id": "F-TZ",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 1,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "order_count": 308,
+        "customer_count": 311,
+        "item_count": 301,
+        "avg_items_per_order": 311,
+        "revenue_gross": 312
+      },
+      "max_rel_diff": {
+        "order_count": 1.2222222222222223,
+        "customer_count": 1.1111111111111112,
+        "item_count": 0.55,
+        "avg_items_per_order": 0.3536299765807963,
+        "revenue_gross": 0.42738020670216104
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-TZ",
+    "fault_id": "F-TZ",
+    "hypothesized_layer": "none",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 1,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "order_count": 17,
+        "revenue_pretax": 17,
+        "revenue_gross": 17
+      },
+      "max_rel_diff": {
+        "order_count": 0.010172143974960876,
+        "revenue_pretax": 0.006254182917541714,
+        "revenue_gross": 0.0062544784099001025
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "daily_order_counts__F-NULL",
+    "fault_id": "F-NULL",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "avg_items_per_order": 246
+      },
+      "max_rel_diff": {
+        "avg_items_per_order": 0.14285714285714285
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-NULL",
+    "fault_id": "F-NULL",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "avg_order_supply_cost": 85
+      },
+      "max_rel_diff": {
+        "avg_order_supply_cost": 0.4
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-SHARED-DEF",
+    "fault_id": "F-SHARED-DEF",
+    "hypothesized_layer": "none",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "order_count": 18,
+        "revenue_pretax": 18,
+        "revenue_gross": 18
+      },
+      "max_rel_diff": {
+        "order_count": 0.018341892883345562,
+        "revenue_pretax": 0.019927792722639105,
+        "revenue_gross": 0.01992783341649078
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "customer_lifetime_value__F-SHARED-DEF",
+    "fault_id": "F-SHARED-DEF",
+    "hypothesized_layer": "none",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "first_order_date": 12,
+        "last_order_date": 13,
+        "lifetime_orders": 502,
+        "lifetime_revenue": 500,
+        "avg_order_value": 501,
+        "avg_order_supply_cost": 500
+      },
+      "max_rel_diff": {
+        "first_order_date": null,
+        "last_order_date": null,
+        "lifetime_orders": 0.25,
+        "lifetime_revenue": 0.36177474402730364,
+        "avg_order_value": 0.08941979522184287,
+        "avg_order_supply_cost": 0.29181818181818175
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "monthly_revenue_by_location__F-OFFSET",
+    "fault_id": "F-OFFSET",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 0,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "order_count": 2,
+        "revenue_pretax": 2,
+        "revenue_gross": 2
+      },
+      "max_rel_diff": {
+        "order_count": 0.1501004016064257,
+        "revenue_pretax": 0.15750708215297451,
+        "revenue_gross": 0.15750674290966835
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  },
+  {
+    "variant_id": "product_margin_monthly__F-OFFSET",
+    "fault_id": "F-OFFSET",
+    "hypothesized_layer": "L3-ai",
+    "effect": "output_changed",
+    "build_ok": true,
+    "diff": {
+      "identical": false,
+      "rows_only_left": 0,
+      "rows_only_right": 12,
+      "duplicate_keys_left": 0,
+      "duplicate_keys_right": 0,
+      "columns_differing": {
+        "units_sold": 12,
+        "revenue": 12,
+        "supply_cost": 12,
+        "gross_margin": 12
+      },
+      "max_rel_diff": {
+        "units_sold": 1.2261904761904763,
+        "revenue": 1.2261904761904763,
+        "supply_cost": 0.8007090814467864,
+        "gross_margin": 1.4129125271211604
+      },
+      "schema_mismatch": []
+    },
+    "verified": true
+  }
+]
