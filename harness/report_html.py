@@ -108,6 +108,7 @@ h2 {{ font: 700 1.5rem/1.2 var(--display); letter-spacing: -0.01em; margin: 3.5r
 h3 {{ font: 600 1.05rem/1.3 var(--body); margin: 2rem 0 0.5rem; }}
 p, li {{ max-width: 70ch; }}
 .lede {{ font-size: 1.15rem; color: var(--ink); }}
+.repo {{ font-size: 0.95rem; margin: 0 0 0.75rem; overflow-wrap: anywhere; }}
 .prov {{ font-size: 0.85rem; color: var(--muted); }}
 .prov p {{ margin: 0.25rem 0; }}
 code {{ font: 0.86em var(--mono); background: color-mix(in srgb, var(--accent) 9%, transparent); padding: 0.05em 0.3em; border-radius: 3px; overflow-wrap: anywhere; }}
@@ -154,6 +155,7 @@ nav.toc a:hover {{ text-decoration: underline; }}
   <div class="eyebrow">Seeded-fault evaluation · dbt v1 vs v2 · DuckDB</div>
   <h1>Does AI-assisted validation catch metric errors?</h1>
   <p class="lede">We planted 39 known faults in six jaffle-shop metric models and ran each one, plus a clean control per model, through three workflows: dbt v1 with a manual spot check, dbt v2 strict with the same spot check, and dbt v2 strict with AI-generated reconciliation.</p>
+  <p class="repo">Code, data and every run: <a href="https://github.com/C00ldudeNoonan/dbt-v2-ai-validation-eval">github.com/C00ldudeNoonan/dbt-v2-ai-validation-eval</a></p>
   <div class="prov">{prov_html}</div>
 </header>
 
