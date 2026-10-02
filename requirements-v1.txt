@@ -4,3 +4,4 @@ duckdb==1.5.6
 pyyaml
 pyarrow
 pytest
+markdown

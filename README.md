@@ -30,6 +30,7 @@ keyed by `config_hash`. Other entry points:
 | `python -m harness.run_arm <variant> <A/B/C> --rep N --keep` | Runs a single run, keeping the workspace for debugging |
 | `python -m harness.score` | Rebuilds `runs.csv`, `flags.csv` and `adjudication.csv` (keeps existing labels) |
 | `python -m harness.report` | Renders `results/report.md` |
+| `python -m harness.report_html` | Renders the shareable `results/report.html` (with a hand-written executive summary) |
 
 The only manual inputs are the `claude` login, the fault-catalog review (done; the catalog is frozen) and the
 adjudication labels.

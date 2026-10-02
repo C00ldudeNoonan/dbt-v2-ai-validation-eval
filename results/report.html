@@ -1,0 +1,1119 @@
+<title>Seeded-Fault Validation Eval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (~72ch) with a wide band for the matrix and tables; findings first, full report after. */
+:root {
+  --paper: #f6f7f5;
+  --surface: #ffffff;
+  --ink: #18211f;
+  --muted: #5a6763;
+  --rule: #d9dfdc;
+  --accent: #0d6b66;
+  --caught: #1f7a52;
+  --miss: #b4532a;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #121816; --surface: #19211f; --ink: #e4ebe8; --muted: #9aa8a3; --rule: #2c3734;
+  --accent: #5cc3ba; --caught: #4fbf8b; --miss: #e08a62; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #121816; --surface: #19211f; --ink: #e4ebe8; --muted: #9aa8a3; --rule: #2c3734;
+  --accent: #5cc3ba; --caught: #4fbf8b; --miss: #e08a62; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 16px/1.6 var(--body); }
+.wrap { max-width: 60rem; margin: 0 auto; padding-inline: 20px; padding-block: 48px 80px; }
+.col { max-width: 44rem; }
+header .eyebrow { font: 500 0.75rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+h1 { font: 700 clamp(2rem, 5vw, 3rem)/1.05 var(--display); letter-spacing: -0.02em; margin: 0.6rem 0 1rem; text-wrap: balance; }
+h2 { font: 700 1.5rem/1.2 var(--display); letter-spacing: -0.01em; margin: 3.5rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); text-wrap: balance; scroll-margin-top: 16px; }
+h3 { font: 600 1.05rem/1.3 var(--body); margin: 2rem 0 0.5rem; }
+p, li { max-width: 70ch; }
+.lede { font-size: 1.15rem; color: var(--ink); }
+.prov { font-size: 0.85rem; color: var(--muted); }
+.prov p { margin: 0.25rem 0; }
+code { font: 0.86em var(--mono); background: color-mix(in srgb, var(--accent) 9%, transparent); padding: 0.05em 0.3em; border-radius: 3px; overflow-wrap: anywhere; }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+blockquote { margin: 1rem 0; padding: 0.75rem 1rem; border-left: 3px solid var(--miss); background: var(--surface); }
+
+.exec h2 { margin-top: 2rem; }
+.exec .headline { font: 600 1.25rem/1.45 var(--display); letter-spacing: -0.005em; padding: 14px 18px; background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 4px; text-wrap: pretty; }
+.exec ul { display: grid; gap: 10px; padding-left: 1.2rem; margin: 1.25rem 0; }
+.exec .trust { font-size: 0.92rem; color: var(--muted); }
+.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 12px; margin: 2rem 0; }
+.finding { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; min-width: 0; }
+.finding .k { font: 500 0.72rem/1.2 var(--mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.finding .v { font: 700 2rem/1.1 var(--display); margin: 0.4rem 0 0.3rem; font-variant-numeric: tabular-nums; }
+.finding .v small { font: 500 0.95rem var(--body); color: var(--muted); }
+.finding p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+.tbl { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+thead th { font: 600 0.78rem/1.3 var(--body); color: var(--muted); border-bottom: 1.5px solid var(--ink); }
+tbody tr:hover td, tbody tr:hover th { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+
+.matrix { margin: 1.5rem 0 0.5rem; }
+.matrix table { font-size: 0.92rem; }
+.matrix thead th span { display: block; font-weight: 400; font-size: 0.72rem; }
+.matrix tbody th { font-weight: 400; white-space: nowrap; }
+.matrix .cat { display: block; font-size: 0.75rem; color: var(--muted); white-space: normal; }
+.matrix .grp { font: 0.75rem var(--mono); color: var(--muted); }
+.matrix .cell { background: color-mix(in srgb, var(--caught) calc(var(--f) * 38%), color-mix(in srgb, var(--miss) calc((1 - var(--f)) * 16%), transparent)); min-width: 6.5rem; }
+.matrix .num { font: 500 1rem var(--mono); }
+.matrix .pre { display: block; font-size: 0.72rem; color: var(--muted); }
+figcaption { font-size: 0.82rem; color: var(--muted); max-width: 70ch; }
+
+nav.toc { font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 1.5rem 0 0; }
+nav.toc a { text-decoration: none; }
+nav.toc a:hover { text-decoration: underline; }
+@media (max-width: 520px) { .wrap { padding-block: 28px 56px; padding-inline: 16px; } h2 { margin-top: 2.5rem; } }
+</style>
+
+<div class="wrap">
+<header class="col">
+  <div class="eyebrow">Seeded-fault evaluation · dbt v1 vs v2 · DuckDB</div>
+  <h1>Does AI-assisted validation catch metric errors?</h1>
+  <p class="lede">We planted 39 known faults in six jaffle-shop metric models and ran each one, plus a clean control per model, through three workflows: dbt v1 with a manual spot check, dbt v2 strict with the same spot check, and dbt v2 strict with AI-generated reconciliation.</p>
+  <div class="prov"><p>Generated from <code>results/runs.csv</code> (225 runs). Config hash(es) in results: <code>e6ec2ffdc948</code>; current config: <code>e6ec2ffdc948</code>. Config did not change between runs.
+Engines: dbt v1 <code>1.12.5</code>, dbt v2 <code>2.0.6</code>. Warehouse: duckdb. Arm C model: <code>claude-sonnet-5</code> via <code>claude_cli</code>.</p></div>
+</header>
+
+<section class="exec col" aria-labelledby="exec-summary">
+  <h2 id="exec-summary">Executive summary</h2>
+  <p class="headline">On 13 business-metric faults that passed builds and tests, the manual spot check caught 3. AI-generated reconciliation caught all 13, every time (39 of 39 runs), with no false alarms on clean models.</p>
+  <ul>
+    <li><strong>dbt v2 catches broken code earlier.</strong> It stopped 11 of 18 structural faults (bad column references, type errors) before any SQL ran on the warehouse. dbt v1 stopped none early; it caught them only after about 48 queries had already run. Both engines eventually caught all 18. v2 did not catch contract violations early: those always surfaced at runtime.</li>
+    <li><strong>AI reconciliation catches wrong numbers that pass every test.</strong> Missing filters, join fan-out, time-zone shifts, null handling and offsetting errors that leave grand totals unchanged. The usual "check the total and last month" spot check caught 3 of 13. The AI caught 13 of 13 in all 3 repetitions, comparing the model against the reference dashboard across about 36 slices per run.</li>
+    <li><strong>It didn't cry wolf.</strong> No flags on the 18 clean-model runs, across 662 queries.</li>
+    <li><strong>It's cheap.</strong> About $0.16 and under 2 minutes per validation. The whole AI run cost $9.75.</li>
+    <li><strong>It has a known blind spot.</strong> When the reference dashboard has the same bug as the model, nothing catches it: 0 of 10 runs. Reconciliation is only as good as the reference you compare against.</li>
+  </ul>
+  <p class="trust"><strong>How far to trust this.</strong> These are planted, clean, single-model faults on a small sample (6 models), and the same team designed both the faults and the checks. Several faults are easy to see in the code the AI reads, and the reference dashboard uses the same column names and grain as each model. The result shows the approach works under good conditions. It does not show how it does against messy real bugs or how much rework it saves in production; that needs a field study.</p>
+</section>
+
+<section class="findings" aria-label="Key results">
+  <div class="finding"><div class="k">Caught before execution</div><div class="v">11<small>/18</small></div><p>Structural faults stopped by dbt v2 strict before any model SQL ran. dbt v1: 0/18.</p></div>
+  <div class="finding"><div class="k">Semantic faults, spot check</div><div class="v">3<small>/13</small></div><p>Caught by the two-total manual check, on either engine.</p></div>
+  <div class="finding"><div class="k">Semantic faults, AI recon</div><div class="v">39<small>/39 runs</small></div><p>All 13 variants caught in all 3 repetitions. Two had thin margins.</p></div>
+  <div class="finding"><div class="k">Clean-control flags</div><div class="v">0<small>/18 runs</small></div><p>Across 662 AI queries. ~$0.155 and 36 queries per AI validation.</p></div>
+</section>
+
+<section class="col">
+  <h2 id="summary">Summary</h2>
+  <p>Across 18 structural fault variants (F-REF, F-TYPE, F-CONTRACT), dbt v2 strict (Arm B) caught 11 before any model SQL executed on the warehouse, versus 0 for dbt v1 (Arm A). Both arms eventually caught all 18 (the rest at runtime). On the 13 semantic fault variants that the reference can detect (F-SHARED-DEF excluded), the timeboxed manual spot check caught 3 on v2 (Arm B) and 3 on v1 (Arm A), while AI-generated reconciliation (Arm C) caught 39 of 39 runs (13 variants in all 3 repetitions, 13 in at least one). F-SHARED-DEF, where the reference dashboard shares the model's bug, was caught in 0 of 10 runs across all arms, as hypothesized. After adjudication, Arm C's false-positive rate on clean controls was 0/18 runs. Arm C cost a mean of 36.4 executed reconciliation queries and $0.155 of LLM usage per validation that reached reconciliation (vs 2 queries and $0 for the manual check).</p>
+</section>
+
+
+<figure class="matrix">
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Fault</th><th scope="col">Layer</th>
+      <th scope="col">Arm A<span>v1 + spot check</span></th>
+      <th scope="col">Arm B<span>v2 strict + spot check</span></th>
+      <th scope="col">Arm C<span>v2 strict + AI recon</span></th></tr></thead>
+    <tbody><tr><th scope="row"><code>F-REF</code><span class="cat">Broken reference</span></th><td class="grp">Structural</td><td class="cell" style="--f:1.000"><span class="num">6/6</span><span class="pre">0 before exec</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span><span class="pre">6 before exec</span></td><td class="cell" style="--f:1.000"><span class="num">18/18</span><span class="pre">18 before exec</span></td></tr><tr><th scope="row"><code>F-TYPE</code><span class="cat">Type / signature error</span></th><td class="grp">Structural</td><td class="cell" style="--f:1.000"><span class="num">6/6</span><span class="pre">0 before exec</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span><span class="pre">5 before exec</span></td><td class="cell" style="--f:1.000"><span class="num">18/18</span><span class="pre">15 before exec</span></td></tr><tr><th scope="row"><code>F-CONTRACT</code><span class="cat">Contract violation</span></th><td class="grp">Structural</td><td class="cell" style="--f:1.000"><span class="num">6/6</span><span class="pre">0 before exec</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span><span class="pre">0 before exec</span></td><td class="cell" style="--f:1.000"><span class="num">18/18</span><span class="pre">0 before exec</span></td></tr><tr><th scope="row"><code>F-DUPKEY</code><span class="cat">Duplicate keys</span></th><td class="grp">Assertion</td><td class="cell" style="--f:1.000"><span class="num">6/6</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span></td><td class="cell" style="--f:1.000"><span class="num">18/18</span></td></tr><tr><th scope="row"><code>F-FANOUT</code><span class="cat">Join fan-out</span></th><td class="grp">Semantic</td><td class="cell" style="--f:0.667"><span class="num">2/3</span></td><td class="cell" style="--f:0.667"><span class="num">2/3</span></td><td class="cell" style="--f:1.000"><span class="num">9/9</span></td></tr><tr><th scope="row"><code>F-FILTER</code><span class="cat">Missing business filter</span></th><td class="grp">Semantic</td><td class="cell" style="--f:0.000"><span class="num">0/4</span></td><td class="cell" style="--f:0.000"><span class="num">0/4</span></td><td class="cell" style="--f:1.000"><span class="num">12/12</span></td></tr><tr><th scope="row"><code>F-TZ</code><span class="cat">Time boundary</span></th><td class="grp">Semantic</td><td class="cell" style="--f:0.500"><span class="num">1/2</span></td><td class="cell" style="--f:0.500"><span class="num">1/2</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span></td></tr><tr><th scope="row"><code>F-NULL</code><span class="cat">Null handling</span></th><td class="grp">Semantic</td><td class="cell" style="--f:0.000"><span class="num">0/2</span></td><td class="cell" style="--f:0.000"><span class="num">0/2</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span></td></tr><tr><th scope="row"><code>F-OFFSET</code><span class="cat">Offsetting errors</span></th><td class="grp">Semantic</td><td class="cell" style="--f:0.000"><span class="num">0/2</span></td><td class="cell" style="--f:0.000"><span class="num">0/2</span></td><td class="cell" style="--f:1.000"><span class="num">6/6</span></td></tr><tr><th scope="row"><code>F-SHARED-DEF</code><span class="cat">Definition drift shared with reference</span></th><td class="grp">Semantic</td><td class="cell" style="--f:0.000"><span class="num">0/2</span></td><td class="cell" style="--f:0.000"><span class="num">0/2</span></td><td class="cell" style="--f:0.000"><span class="num">0/6</span></td></tr></tbody>
+  </table></div>
+  <figcaption>Runs caught / runs, by fault category. Shading is the fraction caught. Arm C ran 3 repetitions per variant. F-SHARED-DEF is a designed miss: the reference shares the model's bug.</figcaption>
+</figure>
+
+<nav class="toc" aria-label="Report sections">
+  <a href="#2-tasks-tested">Tasks</a><a href="#3-baseline-arm-a">Baseline</a><a href="#4-how-correctness-was-judged">Method</a>
+  <a href="#5-engine-comparison-h1-arm-a-vs-arm-b">Engine (H1)</a><a href="#6-reconciliation-comparison-h2-arm-b-vs-arm-c">Reconciliation (H2)</a>
+  <a href="#7-false-positives-clean-controls">False positives</a><a href="#8-cost">Cost</a><a href="#9-missed-cases">Misses</a>
+  <a href="#10-measured-vs-expected">Measured vs expected</a><a href="#11-limitations">Limitations</a>
+</nav>
+
+<main>
+<h2 id="2-tasks-tested">2. Tasks tested</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Metric model</th>
+<th>Grain</th>
+<th>Primary measure (manual check)</th>
+<th>Business definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>monthly_revenue_by_location</code></td>
+<td>order_month, location_id</td>
+<td>revenue_gross</td>
+<td>Monthly revenue per store location. Revenue counts only qualifying orders: orders placed by real customers (internal "QA Test Account" customers are excluded) that have not been refunded. Months are calendar months of the store-local order timestamp. revenue_gross includes tax; revenue_pretax is the order subtotal.</td>
+</tr>
+<tr>
+<td><code>daily_order_counts</code></td>
+<td>order_date</td>
+<td>order_count</td>
+<td>Daily order activity. One row per calendar day (store-local order timestamp) with at least one qualifying order. Qualifying orders exclude internal "QA Test Account" customers and refunded orders. avg_items_per_order is the mean item count over orders that have item records; orders with no item records are excluded from the average rather than counted as zero.</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers</code></td>
+<td>activity_month</td>
+<td>active_customers</td>
+<td>Monthly active customers. A customer is active in a calendar month if they placed at least one qualifying order that month (store-local time). Qualifying orders exclude internal "QA Test Account" customers and refunded orders. order_count is the number of qualifying orders in the month, and orders_per_active_customer is order_count divided by active_customers.</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value</code></td>
+<td>customer_id</td>
+<td>lifetime_revenue</td>
+<td>Lifetime value per customer. One row per real customer with at least one qualifying order (internal "QA Test Account" customers and refunded orders are excluded). lifetime_revenue is the sum of qualifying order totals including tax. avg_order_value is lifetime_revenue / lifetime_orders. avg_order_supply_cost is the mean supply cost over qualifying orders that have item records; orders with no item records are excluded from the average rather than counted as zero.</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly</code></td>
+<td>order_month, product_id</td>
+<td>revenue</td>
+<td>Monthly units, revenue, supply cost and gross margin per product (SKU), from items on qualifying orders (internal "QA Test Account" customers and refunded orders are excluded). revenue is the sum of item list prices; supply_cost is the sum of each item's per-unit supply cost; gross_margin = revenue - supply_cost.</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly</code></td>
+<td>order_month, customer_type</td>
+<td>customers</td>
+<td>Monthly customers, orders and revenue split by new vs returning. A customer is "new" in the calendar month of their first qualifying order and "returning" in every later month. Qualifying orders exclude internal "QA Test Account" customers and refunded orders, both when finding a customer's first order and when counting activity.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-baseline-arm-a">3. Baseline (Arm A)</h2>
+<p>Arm A is <strong>dbt v1</strong> <code>dbt build</code> (parse + compile + models + data tests + unit tests), followed by a <strong>timeboxed manual spot check</strong>: the grand total of the model's primary measure, and the total for the most recent period, each compared with the reference dashboard at ±0.5%. These are the same two total-level queries for every task. <strong>This simulates current practice under time pressure. It is an assumption, not a measurement of how any team actually validates.</strong> Arm B is identical except for the engine (dbt v2 with mandatory strict static analysis run first as a gate). Arm C is Arm B with the spot check replaced by AI-generated reconciliation.</p>
+<h2 id="4-how-correctness-was-judged">4. How correctness was judged</h2>
+<ul>
+<li><strong>Detection</strong> is scored against seeded ground truth: every variant carries exactly one known fault (or none, for clean controls). Each fault was verified before any arm ran to break the build or change the target model's output relative to golden (<code>results/fault_verification.json</code>).</li>
+<li><strong>Attribution.</strong> An L1/L2 failure counts only if the failing node is the target model, or a test/unit test attached to it. An L3 flag counts only if the same query, re-run with the model output replaced by the golden output (same reference), does <em>not</em> flag. That proves the flag is caused by the seeded fault and not by a query bug or a pre-existing discrepancy.</li>
+<li><strong>False positives</strong>: any failure or flag on a clean control, plus any unattributable flag on a fault variant, goes to <code>results/adjudication.csv</code> for a human label (true_issue / acceptable_difference / noise).</li>
+<li><strong>Frozen tolerances</strong>: totals (single-row results) ±0.5%; slices (multi-row results) ±1.0%; absolute floor 1e-06 (differences below it always match); a slice missing on one side always flags. Golden-vs-reference verification used a relative tolerance of 1e-09.</li>
+</ul>
+<h2 id="5-engine-comparison-h1-arm-a-vs-arm-b">5. Engine comparison (H1: Arm A vs Arm B)</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Fault</th>
+<th>Arm A (v1)</th>
+<th>Arm B (v2 strict)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>customer_lifetime_value__F-REF</code></td>
+<td>F-REF</td>
+<td>L1, at runtime, 43 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-REF</code></td>
+<td>F-REF</td>
+<td>L1, at runtime, 46 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-REF</code></td>
+<td>F-REF</td>
+<td>L1, at runtime, 48 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-REF</code></td>
+<td>F-REF</td>
+<td>L1, at runtime, 49 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-REF</code></td>
+<td>F-REF</td>
+<td>L1, at runtime, 51 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-REF</code></td>
+<td>F-REF</td>
+<td>L1, at runtime, 52 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-TYPE</code></td>
+<td>F-TYPE</td>
+<td>L1, at runtime, 43 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-TYPE</code></td>
+<td>F-TYPE</td>
+<td>L1, at runtime, 46 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-TYPE</code></td>
+<td>F-TYPE</td>
+<td>L1, at runtime, 48 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-TYPE</code></td>
+<td>F-TYPE</td>
+<td>L1, at runtime, 49 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-TYPE</code></td>
+<td>F-TYPE</td>
+<td>L1, at runtime, 51 queries</td>
+<td>L1, at runtime, 47 queries</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-TYPE</code></td>
+<td>F-TYPE</td>
+<td>L1, at runtime, 52 queries</td>
+<td>L1, before execution, 0 queries</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-CONTRACT</code></td>
+<td>F-CONTRACT</td>
+<td>L2, at runtime, 43 queries</td>
+<td>L1, at runtime, 52 queries</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-CONTRACT</code></td>
+<td>F-CONTRACT</td>
+<td>L1, at runtime, 47 queries</td>
+<td>L1, at runtime, 47 queries</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-CONTRACT</code></td>
+<td>F-CONTRACT</td>
+<td>L1, at runtime, 48 queries</td>
+<td>L1, at runtime, 51 queries</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-CONTRACT</code></td>
+<td>F-CONTRACT</td>
+<td>L1, at runtime, 50 queries</td>
+<td>L1, at runtime, 48 queries</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-CONTRACT</code></td>
+<td>F-CONTRACT</td>
+<td>L1, at runtime, 51 queries</td>
+<td>L1, at runtime, 46 queries</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-CONTRACT</code></td>
+<td>F-CONTRACT</td>
+<td>L1, at runtime, 52 queries</td>
+<td>L1, at runtime, 49 queries</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-DUPKEY</code></td>
+<td>F-DUPKEY</td>
+<td>L2, at runtime, 56 queries</td>
+<td>L2, at runtime, 70 queries</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-DUPKEY</code></td>
+<td>F-DUPKEY</td>
+<td>L2, at runtime, 63 queries</td>
+<td>L2, at runtime, 72 queries</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-DUPKEY</code></td>
+<td>F-DUPKEY</td>
+<td>L2, at runtime, 67 queries</td>
+<td>L2, at runtime, 74 queries</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-DUPKEY</code></td>
+<td>F-DUPKEY</td>
+<td>L2, at runtime, 69 queries</td>
+<td>L2, at runtime, 72 queries</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-DUPKEY</code></td>
+<td>F-DUPKEY</td>
+<td>L2, at runtime, 74 queries</td>
+<td>L2, at runtime, 78 queries</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-DUPKEY</code></td>
+<td>F-DUPKEY</td>
+<td>L2, at runtime, 78 queries</td>
+<td>L2, at runtime, 57 queries</td>
+</tr>
+</tbody>
+</table></div>
+<p>"queries" = <code>warehouse_queries_before_catch</code>: dbt nodes (models, tests, unit tests) that executed SQL on the warehouse up to and including the failing one. This is the earliness proxy for rework.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Fault</th>
+<th>Variants</th>
+<th>v1 caught / before exec</th>
+<th>v2 caught / before exec</th>
+<th>Mean queries before catch (v1 → v2)</th>
+<th>Hypothesis (recorded before running)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-REF</td>
+<td>6</td>
+<td>6 / 0</td>
+<td>6 / 6</td>
+<td>48 → 0</td>
+<td>v2: L1 before execution (static analysis). v1: L1 at runtime (binder error when the model builds).</td>
+</tr>
+<tr>
+<td>F-TYPE</td>
+<td>6</td>
+<td>6 / 0</td>
+<td>6 / 5</td>
+<td>48 → 8</td>
+<td>v2 strict: L1 before execution (type inference). v1: L1 at runtime (DuckDB binder error) at best.</td>
+</tr>
+<tr>
+<td>F-CONTRACT</td>
+<td>6</td>
+<td>6 / 0</td>
+<td>6 / 0</td>
+<td>48 → 49</td>
+<td>v2: L1 before execution (inferred output schema vs contract). v1: L1 at runtime (contract preflight) for base-type drift.</td>
+</tr>
+<tr>
+<td>F-DUPKEY</td>
+<td>6</td>
+<td>6 / 0</td>
+<td>6 / 0</td>
+<td>68 → 70</td>
+<td>Same on both: L2 (unique / unique_combination_of_columns test) after the model builds.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="6-reconciliation-comparison-h2-arm-b-vs-arm-c">6. Reconciliation comparison (H2: Arm B vs Arm C)</h2>
+<p>Cells show runs caught / runs, with the catching layer(s). Arm C ran 3 repetitions per variant.</p>
+<p><strong>By fault category</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Fault</th>
+<th>Category</th>
+<th>Arm A</th>
+<th>Arm B</th>
+<th>Arm C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-REF</td>
+<td>Broken reference</td>
+<td>6/6 (100%)</td>
+<td>6/6 (100%)</td>
+<td>18/18 (100%)</td>
+</tr>
+<tr>
+<td>F-TYPE</td>
+<td>Type / signature error</td>
+<td>6/6 (100%)</td>
+<td>6/6 (100%)</td>
+<td>18/18 (100%)</td>
+</tr>
+<tr>
+<td>F-CONTRACT</td>
+<td>Contract violation</td>
+<td>6/6 (100%)</td>
+<td>6/6 (100%)</td>
+<td>18/18 (100%)</td>
+</tr>
+<tr>
+<td>F-DUPKEY</td>
+<td>Duplicate keys</td>
+<td>6/6 (100%)</td>
+<td>6/6 (100%)</td>
+<td>18/18 (100%)</td>
+</tr>
+<tr>
+<td>F-FANOUT</td>
+<td>Join fan-out</td>
+<td>2/3 (67%)</td>
+<td>2/3 (67%)</td>
+<td>9/9 (100%)</td>
+</tr>
+<tr>
+<td>F-FILTER</td>
+<td>Missing business filter</td>
+<td>0/4 (0%)</td>
+<td>0/4 (0%)</td>
+<td>12/12 (100%)</td>
+</tr>
+<tr>
+<td>F-TZ</td>
+<td>Time boundary</td>
+<td>1/2 (50%)</td>
+<td>1/2 (50%)</td>
+<td>6/6 (100%)</td>
+</tr>
+<tr>
+<td>F-NULL</td>
+<td>Null handling</td>
+<td>0/2 (0%)</td>
+<td>0/2 (0%)</td>
+<td>6/6 (100%)</td>
+</tr>
+<tr>
+<td>F-SHARED-DEF</td>
+<td>Definition drift shared with reference</td>
+<td>0/2 (0%)</td>
+<td>0/2 (0%)</td>
+<td>0/6 (0%)</td>
+</tr>
+<tr>
+<td>F-OFFSET</td>
+<td>Offsetting errors</td>
+<td>0/2 (0%)</td>
+<td>0/2 (0%)</td>
+<td>6/6 (100%)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>By variant (hypothesized vs observed layer)</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Hypothesized</th>
+<th>Arm A</th>
+<th>Arm B</th>
+<th>Arm C</th>
+<th>Observed layers (any arm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>customer_lifetime_value__F-REF</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-REF</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-REF</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-REF</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-REF</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-REF</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-TYPE</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-TYPE</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-TYPE</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-TYPE</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-TYPE</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-TYPE</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-CONTRACT</code></td>
+<td>L1</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1, L2</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-CONTRACT</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-CONTRACT</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-CONTRACT</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-CONTRACT</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-CONTRACT</code></td>
+<td>L1</td>
+<td>1/1 (L1)</td>
+<td>1/1 (L1)</td>
+<td>3/3 (L1)</td>
+<td>L1</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-DUPKEY</code></td>
+<td>L2</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L2)</td>
+<td>3/3 (L2)</td>
+<td>L2</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-DUPKEY</code></td>
+<td>L2</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L2)</td>
+<td>3/3 (L2)</td>
+<td>L2</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-DUPKEY</code></td>
+<td>L2</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L2)</td>
+<td>3/3 (L2)</td>
+<td>L2</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-DUPKEY</code></td>
+<td>L2</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L2)</td>
+<td>3/3 (L2)</td>
+<td>L2</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-DUPKEY</code></td>
+<td>L2</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L2)</td>
+<td>3/3 (L2)</td>
+<td>L2</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-DUPKEY</code></td>
+<td>L2</td>
+<td>1/1 (L2)</td>
+<td>1/1 (L2)</td>
+<td>3/3 (L2)</td>
+<td>L2</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-FANOUT</code></td>
+<td>L3</td>
+<td>1/1 (L3)</td>
+<td>1/1 (L3)</td>
+<td>3/3 (L3)</td>
+<td>L3</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-FANOUT</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-FANOUT</code></td>
+<td>L3</td>
+<td>1/1 (L3)</td>
+<td>1/1 (L3)</td>
+<td>3/3 (L3)</td>
+<td>L3</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-FILTER</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-FILTER</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-FILTER</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-FILTER</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-TZ</code></td>
+<td>L3-ai</td>
+<td>1/1 (L3)</td>
+<td>1/1 (L3)</td>
+<td>3/3 (L3)</td>
+<td>L3</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-TZ</code></td>
+<td>none</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-NULL</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-NULL</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-SHARED-DEF</code></td>
+<td>none</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>0/3</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-SHARED-DEF</code></td>
+<td>none</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>0/3</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-OFFSET</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-OFFSET</code></td>
+<td>L3-ai</td>
+<td>0/1</td>
+<td>0/1</td>
+<td>3/3 (L3)</td>
+<td>L3, none</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Arm C catch margin</strong>: attributable flagged queries per repetition. A margin of 1 means a single generated query was the difference between a catch and a miss.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Attributable flags per rep</th>
+<th>Min</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>customer_lifetime_value__F-FANOUT</code></td>
+<td>22, 21, 15</td>
+<td>15</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-FANOUT</code></td>
+<td>14, 19, 12</td>
+<td>12</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-FANOUT</code></td>
+<td>19, 24, 24</td>
+<td>19</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-FILTER</code></td>
+<td>14, 14, 16</td>
+<td>14</td>
+</tr>
+<tr>
+<td><code>monthly_active_customers__F-FILTER</code></td>
+<td>2, 2, 4</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-FILTER</code></td>
+<td>7, 7, 8</td>
+<td>7</td>
+</tr>
+<tr>
+<td><code>new_vs_returning_customers_monthly__F-FILTER</code></td>
+<td>15, 13, 14</td>
+<td>13</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-TZ</code></td>
+<td>21, 17, 25</td>
+<td>17</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-TZ</code></td>
+<td>12, 14, 15</td>
+<td>12</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-NULL</code></td>
+<td>3, 2, 4</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>daily_order_counts__F-NULL</code></td>
+<td>1, 2, 4</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>customer_lifetime_value__F-SHARED-DEF</code></td>
+<td>0, 0, 0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-SHARED-DEF</code></td>
+<td>0, 0, 0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>monthly_revenue_by_location__F-OFFSET</code></td>
+<td>8, 9, 9</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>product_margin_monthly__F-OFFSET</code></td>
+<td>13, 15, 15</td>
+<td>13</td>
+</tr>
+</tbody>
+</table></div>
+<p>Layer key: L1 structural, L2 assertion, L3 reconciliation; <code>L3-ai</code> = hypothesized to be caught only by broad AI reconciliation; <code>none</code> = hypothesized miss.</p>
+<h2 id="7-false-positives-clean-controls">7. False positives (clean controls)</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Arm</th>
+<th>Control runs</th>
+<th>Runs with any flag/failure</th>
+<th>Recon queries executed</th>
+<th>Recon queries flagged</th>
+<th>FP rate (runs)</th>
+<th>Runs flagged only for true issues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arm A</td>
+<td>6</td>
+<td>0</td>
+<td>12</td>
+<td>0</td>
+<td>0/6 (0%)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Arm B</td>
+<td>6</td>
+<td>0</td>
+<td>12</td>
+<td>0</td>
+<td>0/6 (0%)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Arm C</td>
+<td>18</td>
+<td>0</td>
+<td>662</td>
+<td>0</td>
+<td>0/18 (0%)</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<p>Fault-variant runs that also raised unattributable flags: 4 (listed in <code>adjudication.csv</code>).</p>
+<h2 id="8-cost">8. Cost</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Arm</th>
+<th>Runs</th>
+<th>Runs reaching L3</th>
+<th>Mean recon queries executed</th>
+<th>Mean recon exec time (s)</th>
+<th>Mean LLM calls</th>
+<th>Mean tokens in/out</th>
+<th>Mean LLM cost / validation</th>
+<th>Total LLM cost</th>
+<th>Mean LLM wall time (s)</th>
+<th>Mean run wall clock (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arm A</td>
+<td>45</td>
+<td>21</td>
+<td>2.0</td>
+<td>0.002</td>
+<td>0.00</td>
+<td>0 / 0</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>0</td>
+<td>7.1</td>
+</tr>
+<tr>
+<td>Arm B</td>
+<td>45</td>
+<td>21</td>
+<td>2.0</td>
+<td>0.002</td>
+<td>0.00</td>
+<td>0 / 0</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>0</td>
+<td>1.8</td>
+</tr>
+<tr>
+<td>Arm C</td>
+<td>135</td>
+<td>63</td>
+<td>36.4</td>
+<td>0.025</td>
+<td>1.02</td>
+<td>3072 / 14246</td>
+<td>$0.155</td>
+<td>$9.75</td>
+<td>103</td>
+<td>49.7</td>
+</tr>
+</tbody>
+</table></div>
+<p>LLM cost is the <code>total_cost_usd</code> reported by the claude CLI for <code>claude-sonnet-5</code>. Means are over runs that reached reconciliation (L1/L2-caught runs never call the LLM). The warehouse is local DuckDB, so there is no warehouse cost; execution times do not transfer to cloud warehouses.</p>
+<h2 id="9-missed-cases">9. Missed cases</h2>
+<p><strong><code>monthly_active_customers__F-FANOUT</code></strong> (Join fan-out; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>order_count</code> differs in 12 rows (max 58.84%); <code>orders_per_active_customer</code> differs in 12 rows (max 58.84%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>customer_lifetime_value__F-FILTER</code></strong> (Missing business filter; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: rows only in model 8, only in golden 0.</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>monthly_active_customers__F-FILTER</code></strong> (Missing business filter; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>active_customers</code> differs in 1 rows (max 1.29%); <code>order_count</code> differs in 1 rows (max 1.97%); <code>orders_per_active_customer</code> differs in 1 rows (max 0.67%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>monthly_revenue_by_location__F-FILTER</code></strong> (Missing business filter; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>order_count</code> differs in 1 rows (max 6.02%); <code>revenue_pretax</code> differs in 1 rows (max 10.36%); <code>revenue_gross</code> differs in 1 rows (max 10.36%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>new_vs_returning_customers_monthly__F-FILTER</code></strong> (Missing business filter; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>customers</code> differs in 1 rows (max 2.83%); <code>order_count</code> differs in 1 rows (max 5.43%); <code>revenue_gross</code> differs in 1 rows (max 9.23%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>monthly_revenue_by_location__F-TZ</code></strong> (Time boundary; hypothesized none). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: rows only in model 1, only in golden 0; <code>order_count</code> differs in 17 rows (max 1.02%); <code>revenue_pretax</code> differs in 17 rows (max 0.63%); <code>revenue_gross</code> differs in 17 rows (max 0.63%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total]; a daily slice was NOT generated.</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total]; a daily slice was NOT generated.</li>
+</ul>
+<p><strong><code>customer_lifetime_value__F-NULL</code></strong> (Null handling; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>avg_order_supply_cost</code> differs in 85 rows (max 40.00%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>daily_order_counts__F-NULL</code></strong> (Null handling; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>avg_items_per_order</code> differs in 246 rows (max 14.29%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[day;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[day;total].</li>
+</ul>
+<p><strong><code>customer_lifetime_value__F-SHARED-DEF</code></strong> (Definition drift shared with reference; hypothesized none). Missed in: Arm A 1/1, Arm B 1/1, Arm C 3/3.</p>
+<ul>
+<li>Fault effect vs golden: <code>first_order_date</code> differs in 12 rows; <code>last_order_date</code> differs in 13 rows; <code>lifetime_orders</code> differs in 502 rows (max 25.00%); <code>lifetime_revenue</code> differs in 500 rows (max 36.18%); <code>avg_order_value</code> differs in 501 rows (max 8.94%); <code>avg_order_supply_cost</code> differs in 500 rows (max 29.18%).</li>
+<li>Why: the reference dashboard was given the same definitional error (refunds included) through a per-fault override, so the model and the reference agree. No reconciliation against this reference can catch it. This is the designed blind spot of reconciliation.</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm C rep 1: dims_covered=[customer_id;customer_name;first_order_date;last_order_date;lifetime_orders], grains_covered=[day;month;none;quarter;week;year].</li>
+<li>Arm C rep 2: dims_covered=[customer_id;first_order_date;last_order_date;lifetime_orders_bucket], grains_covered=[month;none;quarter;year].</li>
+<li>Arm C rep 3: dims_covered=[customer_id;customer_name;first_order_date;last_order_date;lifetime_orders], grains_covered=[day;month;none;quarter;week;year].</li>
+</ul>
+<p><strong><code>monthly_revenue_by_location__F-SHARED-DEF</code></strong> (Definition drift shared with reference; hypothesized none). Missed in: Arm A 1/1, Arm B 1/1, Arm C 3/3.</p>
+<ul>
+<li>Fault effect vs golden: <code>order_count</code> differs in 18 rows (max 1.83%); <code>revenue_pretax</code> differs in 18 rows (max 1.99%); <code>revenue_gross</code> differs in 18 rows (max 1.99%).</li>
+<li>Why: the reference dashboard was given the same definitional error (refunds included) through a per-fault override, so the model and the reference agree. No reconciliation against this reference can catch it. This is the designed blind spot of reconciliation.</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm C rep 1: dims_covered=[location_id;location_name;order_month], grains_covered=[month;none;quarter;year].</li>
+<li>Arm C rep 2: dims_covered=[location_id;order_month], grains_covered=[month;none;quarter;year].</li>
+<li>Arm C rep 3: dims_covered=[location_id;location_name;order_month], grains_covered=[month;none;quarter;year].</li>
+</ul>
+<p><strong><code>monthly_revenue_by_location__F-OFFSET</code></strong> (Offsetting errors; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: <code>order_count</code> differs in 2 rows (max 15.01%); <code>revenue_pretax</code> differs in 2 rows (max 15.75%); <code>revenue_gross</code> differs in 2 rows (max 15.75%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<p><strong><code>product_margin_monthly__F-OFFSET</code></strong> (Offsetting errors; hypothesized L3-ai). Missed in: Arm A 1/1, Arm B 1/1.</p>
+<ul>
+<li>Fault effect vs golden: rows only in model 0, only in golden 12; <code>units_sold</code> differs in 12 rows (max 122.62%); <code>revenue</code> differs in 12 rows (max 122.62%); <code>supply_cost</code> differs in 12 rows (max 80.07%); <code>gross_margin</code> differs in 12 rows (max 141.29%).</li>
+<li>Arm A rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+<li>Arm B rep 1: dims_covered=[-], grains_covered=[month;total].</li>
+</ul>
+<h2 id="10-measured-vs-expected">10. Measured vs expected</h2>
+<p><strong>Measured (this harness, seeded faults, local DuckDB):</strong></p>
+<ul>
+<li>Structural faults caught before warehouse execution: v1 0/18, v2 strict 11/18.</li>
+<li>Semantic faults (excluding F-SHARED-DEF) caught by the manual spot check: Arm A 3/13, Arm B 3/13 variants.</li>
+<li>Same faults caught by AI reconciliation: 39/39 runs; 13/13 variants in every repetition.</li>
+<li>Arm C false-positive rate on clean controls: 0/18 runs.</li>
+<li>Arm C mean cost per validation reaching L3: 36.4 queries, 3072/14246 tokens, $0.155, 103s LLM latency.</li>
+<li>Shared-definition faults caught: 0 (expected 0).</li>
+</ul>
+<p><strong>Expected, not demonstrated here:</strong></p>
+<ul>
+<li><em>Reduced production rework.</em> Earlier detection (fewer warehouse queries before a catch, pre-execution catches) is only a proxy. Field study: compare time-to-fix and re-run counts on real PRs before and after adopting v2 strict plus AI reconciliation, over matched periods.</li>
+<li><em>Fewer post-merge metric fixes.</em> Field study: count commits touching metric models within N days after merge that change output values, for teams with vs without the workflow (or before/after).</li>
+<li><em>Fewer dashboard-mismatch tickets.</em> Field study: tag and count data-quality tickets that report a dashboard/model mismatch per quarter, before and after rollout, normalized by model count.</li>
+<li><em>Generalization to real faults and real dashboards.</em> Field study: replay historical incident PRs (real bugs with known fixes) through the arms, using a production dashboard as the reference.</li>
+</ul>
+<h2 id="11-limitations">11. Limitations</h2>
+<ul>
+<li>Seeded faults are cleaner and more isolated than real ones: one fault per variant, each in a single model.</li>
+<li>The sample is small: 6 metric models, 39 fault variants, 6 clean controls, 3 repetitions for Arm C.</li>
+<li>The faults, the tests, the reference dashboard and the checks were all designed by the same team (here, the same agent). Unit tests were deliberately written as happy-path tests.</li>
+<li>Adjudication was not independent: 8 of 8 adjudication labels were applied by the AI agent that built the harness, at the user's direction (see <code>notes</code> in <code>adjudication.csv</code>). A human should review them before the false-positive numbers are relied on.</li>
+<li>The manual baseline is simulated (two fixed total-level queries). Real reviewers vary.</li>
+<li>DuckDB was used: there is no warehouse cost, and execution times and cost numbers do not transfer to cloud warehouses.</li>
+<li>Evaluation-only data was seeded into jaffle-shop (QA test accounts, refunds) to give business filters something to act on; fault magnitudes depend on those seeds.</li>
+<li>The spec's default model <code>claude-sonnet-5-5</code> is not recognized by the installed claude CLI, which silently falls back to another model. Arm C used <code>claude-sonnet-5</code>, and every call is checked against the model the CLI reports.</li>
+<li>The reference dashboard has the same grain and column names as each model, which makes reconciliation queries easier to write than against a real dashboard with different naming and grain.</li>
+<li>Several mutations are conspicuous in the SQL the AI reads (a hard-coded remap, a <code>- interval 8 hour</code>, a <code>coalesce(x, 0)</code>, a dropped filter). That may steer query generation more than subtler real bugs would.</li>
+<li>The AI saw the (faulted) model SQL, as it would in a real review. Detection is credited only for flagged reconciliation queries, not for anything the model might have noticed by reading the code.</li>
+</ul>
+<h2 id="appendix-arm-isolation-check">Appendix: arm isolation check</h2>
+<ul>
+<li>Arm A: engine=v1 (1.12.5), static-analysis gate=False, reconciliation=manual. Matches config, single-valued across all runs.</li>
+<li>Arm B: engine=v2 (2.0.6), static-analysis gate=True, reconciliation=manual. Matches config, single-valued across all runs.</li>
+<li>Arm C: engine=v2 (2.0.6), static-analysis gate=True, reconciliation=ai. Matches config, single-valued across all runs.</li>
+<li>Config keys that differ A vs B: ['engine', 'static_analysis_gate']. B vs C: ['reconciliation']. (A vs B: engine; v2's mandatory strict gate comes with the engine. B vs C: reconciliation only.)</li>
+</ul>
+</main>
+</div>

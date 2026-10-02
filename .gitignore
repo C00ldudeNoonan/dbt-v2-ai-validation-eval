@@ -11,3 +11,4 @@ reference_project/dbt_internal_packages/
 *.duckdb
 *.duckdb.wal
 logs/
+results/*.log
