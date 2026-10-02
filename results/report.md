@@ -1,13 +1,11 @@
 # Seeded-fault evaluation: dbt v2 validation and AI-assisted reconciliation
 
-> **DRAFT: adjudication pending.** 8 row(s) in `results/adjudication.csv` are unlabeled. False-positive rates are withheld until every row has a label (true_issue, acceptable_difference, noise). Re-run `python -m harness.report` after labeling.
-
 Generated from `results/runs.csv` (225 runs). Config hash(es) in results: `e6ec2ffdc948`; current config: `e6ec2ffdc948`. Config did not change between runs.
 Engines: dbt v1 `1.12.5`, dbt v2 `2.0.6`. Warehouse: duckdb. Arm C model: `claude-sonnet-5` via `claude_cli`.
 
 ## 1. Summary
 
-Across 18 structural fault variants (F-REF, F-TYPE, F-CONTRACT), dbt v2 strict (Arm B) caught 11 before any model SQL executed on the warehouse, versus 0 for dbt v1 (Arm A). Both arms eventually caught all 18 (the rest at runtime). On the 13 semantic fault variants that the reference can detect (F-SHARED-DEF excluded), the timeboxed manual spot check caught 3 on v2 (Arm B) and 3 on v1 (Arm A), while AI-generated reconciliation (Arm C) caught 39 of 39 runs (13 variants in all 3 repetitions, 13 in at least one). F-SHARED-DEF, where the reference dashboard shares the model's bug, was caught in 0 of 10 runs across all arms, as hypothesized. On clean controls, Arm C raised at least one flag in 0 of 18 runs; its false-positive rate awaits adjudication of 8 item(s). Arm C cost a mean of 36.4 executed reconciliation queries and $0.155 of LLM usage per validation that reached reconciliation (vs 2 queries and $0 for the manual check).
+Across 18 structural fault variants (F-REF, F-TYPE, F-CONTRACT), dbt v2 strict (Arm B) caught 11 before any model SQL executed on the warehouse, versus 0 for dbt v1 (Arm A). Both arms eventually caught all 18 (the rest at runtime). On the 13 semantic fault variants that the reference can detect (F-SHARED-DEF excluded), the timeboxed manual spot check caught 3 on v2 (Arm B) and 3 on v1 (Arm A), while AI-generated reconciliation (Arm C) caught 39 of 39 runs (13 variants in all 3 repetitions, 13 in at least one). F-SHARED-DEF, where the reference dashboard shares the model's bug, was caught in 0 of 10 runs across all arms, as hypothesized. After adjudication, Arm C's false-positive rate on clean controls was 0/18 runs. Arm C cost a mean of 36.4 executed reconciliation queries and $0.155 of LLM usage per validation that reached reconciliation (vs 2 queries and $0 for the manual check).
 
 ## 2. Tasks tested
 
@@ -156,13 +154,11 @@ Layer key: L1 structural, L2 assertion, L3 reconciliation; `L3-ai` = hypothesize
 
 ## 7. False positives (clean controls)
 
-**Withheld: 8 adjudication row(s) unlabeled.** Raw counts, *not* false-positive rates:
-
 | Arm | Control runs | Runs with any flag/failure | Recon queries executed | Recon queries flagged | FP rate (runs) | Runs flagged only for true issues |
 |---|---|---|---|---|---|---|
-| Arm A | 6 | 0 | 12 | 0 | pending | pending |
-| Arm B | 6 | 0 | 12 | 0 | pending | pending |
-| Arm C | 18 | 0 | 662 | 0 | pending | pending |
+| Arm A | 6 | 0 | 12 | 0 | 0/6 (0%) | 0 |
+| Arm B | 6 | 0 | 12 | 0 | 0/6 (0%) | 0 |
+| Arm C | 18 | 0 | 662 | 0 | 0/18 (0%) | 0 |
 
 Fault-variant runs that also raised unattributable flags: 4 (listed in `adjudication.csv`).
 
@@ -265,6 +261,7 @@ LLM cost is the `total_cost_usd` reported by the claude CLI for `claude-sonnet-5
 - Structural faults caught before warehouse execution: v1 0/18, v2 strict 11/18.
 - Semantic faults (excluding F-SHARED-DEF) caught by the manual spot check: Arm A 3/13, Arm B 3/13 variants.
 - Same faults caught by AI reconciliation: 39/39 runs; 13/13 variants in every repetition.
+- Arm C false-positive rate on clean controls: 0/18 runs.
 - Arm C mean cost per validation reaching L3: 36.4 queries, 3072/14246 tokens, $0.155, 103s LLM latency.
 - Shared-definition faults caught: 0 (expected 0).
 
@@ -280,6 +277,7 @@ LLM cost is the `total_cost_usd` reported by the claude CLI for `claude-sonnet-5
 - Seeded faults are cleaner and more isolated than real ones: one fault per variant, each in a single model.
 - The sample is small: 6 metric models, 39 fault variants, 6 clean controls, 3 repetitions for Arm C.
 - The faults, the tests, the reference dashboard and the checks were all designed by the same team (here, the same agent). Unit tests were deliberately written as happy-path tests.
+- Adjudication was not independent: 8 of 8 adjudication labels were applied by the AI agent that built the harness, at the user's direction (see `notes` in `adjudication.csv`). A human should review them before the false-positive numbers are relied on.
 - The manual baseline is simulated (two fixed total-level queries). Real reviewers vary.
 - DuckDB was used: there is no warehouse cost, and execution times and cost numbers do not transfer to cloud warehouses.
 - Evaluation-only data was seeded into jaffle-shop (QA test accounts, refunds) to give business filters something to act on; fault magnitudes depend on those seeds.

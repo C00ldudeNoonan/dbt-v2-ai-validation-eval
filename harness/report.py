@@ -422,6 +422,11 @@ def main() -> int:
              f"{len([v for v in variants if v[2] == 'CONTROL'])} clean controls, {reps_c} repetitions for Arm C.")
     L.append("- The faults, the tests, the reference dashboard and the checks were all designed by the same team "
              "(here, the same agent). Unit tests were deliberately written as happy-path tests.")
+    agent_labeled = sum(1 for a in adj if "agent-labeled" in a.get("notes", ""))
+    if agent_labeled:
+        L.append(f"- Adjudication was not independent: {agent_labeled} of {len(adj)} adjudication labels were applied by "
+                 "the AI agent that built the harness, at the user's direction (see `notes` in `adjudication.csv`). "
+                 "A human should review them before the false-positive numbers are relied on.")
     L.append("- The manual baseline is simulated (two fixed total-level queries). Real reviewers vary.")
     L.append("- DuckDB was used: there is no warehouse cost, and execution times and cost numbers do not transfer to cloud warehouses.")
     L.append("- Evaluation-only data was seeded into jaffle-shop (QA test accounts, refunds) to give business filters "
