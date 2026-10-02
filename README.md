@@ -1,4 +1,4 @@
-# validation-eval
+# dbt-v2-ai-validation-eval
 
 A seeded-fault evaluation of dbt v2 validation and AI-assisted reconciliation. It
 implements `SPEC-validation-eval.md`. Known faults are planted in dbt metric models, each
